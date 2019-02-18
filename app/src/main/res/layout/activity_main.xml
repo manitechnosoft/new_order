@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.MainActivity">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/scanned_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/add_sales_person"
+        android:layout_height="wrap_content"
+        android:text="@string/add_sales_person"
+        android:layout_width="fill_parent"></Button>
+    <Button
+        android:id="@+id/display_sales_person"
+        android:layout_height="wrap_content"
+        android:text="@string/display_sales_person"
+        android:layout_width="fill_parent"></Button>
+    <Button
+    android:id="@+id/add_product"
+    android:layout_height="wrap_content"
+    android:text="@string/add_product"
+    android:layout_width="fill_parent"></Button>
+    <Button
+        android:id="@+id/display_product"
+        android:layout_height="wrap_content"
+        android:text="@string/display_product"
+        android:layout_width="fill_parent"></Button>
+    <Button
+        android:id="@+id/sales_order"
+        android:layout_height="wrap_content"
+        android:text="@string/product_name"
+        android:layout_width="fill_parent"></Button>
+    <Button
+        android:id="@+id/display_sales_order"
+        android:layout_height="wrap_content"
+        android:text="@string/display_sales_orders"
+        android:layout_width="fill_parent"></Button>\
+    <Button
+        android:id="@+id/display_today_sales_order"
+        android:layout_height="wrap_content"
+        android:text="@string/display_today_sales_orders"
+        android:layout_width="fill_parent"></Button>
+    <Button
+        android:id="@+id/config"
+        android:layout_height="wrap_content"
+        android:text="@string/config"
+        android:layout_width="fill_parent"></Button>
+    <Button
+        android:id="@+id/new_design"
+        android:layout_height="wrap_content"
+        android:text="New Design"
+        android:layout_width="fill_parent"></Button>
+    <Button
+        android:id="@+id/barcode_reader"
+        android:layout_height="wrap_content"
+        android:text="New Design"
+        android:layout_width="fill_parent"></Button>
+
+    <Button
+        android:id="@+id/turn_light"
+        android:layout_height="wrap_content"
+        android:text="Turn Off/On"
+        android:layout_width="fill_parent"></Button>
+</LinearLayout>
+</android.support.constraint.ConstraintLayout>

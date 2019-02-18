@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/filters_form"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        style="@style/AppTheme.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Filters" />
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight=".50" />
+    <ImageView
+        android:id="@+id/button_clear_filter"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        app:srcCompat="@drawable/filter"  />
+</LinearLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/icon_category1"
+            style="@style/AppTheme.FilterIcon"
+            android:layout_centerVertical="true"
+            app:srcCompat="@drawable/administrator_male"/>
+
+        <Spinner
+            android:id="@+id/spinner_sales_person"
+            style="@style/AppTheme.FilterSpinner"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/icon_category1" />
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/cal_category"
+            style="@style/AppTheme.FilterIcon"
+            android:layout_centerVertical="true"
+            app:srcCompat="@drawable/calendar"/>
+
+        <EditText
+            android:id="@+id/from_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/AppTheme.FilterSpinner"
+            android:layout_toRightOf="@+id/cal_category"
+            android:hint="Enter From Date" />
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/cal_to_category"
+            style="@style/AppTheme.FilterIcon"
+            android:layout_centerVertical="true"
+            app:srcCompat="@drawable/calendar"/>
+
+        <EditText
+            android:id="@+id/to_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/AppTheme.FilterSpinner"
+            android:layout_toRightOf="@+id/cal_to_category"
+            android:hint="Enter To Date" />
+
+    </RelativeLayout>
+
+    <!-- Sort by -->
+    <!-- <RelativeLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content">
+
+         <ImageView
+             android:id="@+id/icon_sort"
+             style="@style/AppTheme.FilterIcon"
+             android:layout_centerVertical="true"
+             android:tint="@color/greySecondary"
+             app:srcCompat="@drawable/ic_sort_white_24px" />
+
+         <Spinner
+             android:id="@+id/spinner_sort"
+             style="@style/AppTheme.FilterSpinner"
+             android:layout_centerVertical="true"
+             android:layout_toRightOf="@+id/icon_sort"
+             android:entries="@array/sort_by" />
+    </RelativeLayout>-->
+
+    <!-- Cancel and apply buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight=".50" />
+
+        <Button
+            android:id="@+id/button_clear"
+            style="@style/AppTheme.FilterIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_weight=".75"
+            android:drawableLeft="@drawable/broom_48"
+            android:drawablePadding="5dp"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:text="Clear" />
+        <Button
+            android:id="@+id/button_search"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/checkmark_50"
+            android:drawableTint="@color/white"
+            android:text="Apply"
+            android:theme="@style/ThemeOverlay.Button" />
+
+    </LinearLayout>
+
+</LinearLayout>
+

@@ -1,0 +1,14 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+
+    <dimen name="tile_padding">5dp</dimen>
+    <dimen name="zero_padding">0dp</dimen>
+    <dimen name="card_item_padding">5dp</dimen>
+    <dimen name="title_text">14dp</dimen>
+
+    <dimen name="step_pager_tab_width">32dp</dimen>
+    <dimen name="step_pager_tab_height">3dp</dimen>
+    <dimen name="step_pager_tab_spacing">4dp</dimen>
+    <dimen name="button_padding">10dp</dimen>
+
+</resources>

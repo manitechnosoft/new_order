@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/frgSalesId"
+              android:orientation="vertical"
+    android:gravity="center"
+    android:includeFontPadding="false"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+
+    <Button
+        android:id="@+id/new_order"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:paddingRight="@dimen/button_padding"
+        android:paddingLeft="@dimen/button_padding"
+        android:background="@drawable/round_corner_button"
+        android:textColor="@color/colorPrimary"
+        android:drawableRight="@drawable/poll_active"
+        android:text="New Order"/>
+
+
+        <Button
+            android:id="@+id/re_print"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:layout_gravity="right"
+            android:layout_marginTop="20dp"
+            android:paddingRight="@dimen/button_padding"
+            android:paddingLeft="@dimen/button_padding"
+            android:gravity="center"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/round_corner_button"
+            android:textColor="@color/colorPrimary"
+            android:drawableRight="@drawable/printer"
+            android:text="Re-Print" />
+
+</LinearLayout>
