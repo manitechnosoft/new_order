@@ -2,6 +2,7 @@ package com.mobile.order.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +12,11 @@ import android.widget.TextView;
 
 import com.mobile.order.R;
 import com.mobile.order.activity.SalesOrderDisplayActivity;
+import com.mobile.order.model.Product;
 import com.mobile.order.model.SalesOrder;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -49,7 +52,8 @@ public class SalesDetailSubAdapter extends RecyclerView.Adapter<SalesDetailSubAd
         viewHolder.salesAmount.setText(aSale.getTotal().toString());
         viewHolder.totalItems.setText(aSale.getProductList()!=null ? String.valueOf(aSale.getProductList().size()):"0");
         viewHolder.docId.setText(aSale.getSalesOrderDocId());
-
+        viewHolder.productsDetailList.addAll(aSale.getProductList());
+        viewHolder.salesDetailArrayAdapter.notifyDataSetChanged();
        /* SalesDetailSubAdapter childAdapter=new SalesDetailSubAdapter(aSale.getProductList(),mItemListener);
         viewHolder.salesListByMonth.setAdapter(childAdapter);
         viewHolder.salesListByMonth.addOnItemTouchListener(new RecyclerItemListener(context, viewHolder.salesListByMonth,
@@ -105,19 +109,27 @@ public class SalesDetailSubAdapter extends RecyclerView.Adapter<SalesDetailSubAd
         public TextView totalItems;
         public LinearLayout cardView;
         public RecyclerView rvProductList;
+        List<Product> productsDetailList =new ArrayList<>();
+        private RecyclerView.Adapter salesDetailArrayAdapter;
+        private RecyclerView.LayoutManager mLayoutManager;
+
         //private SalesActivity.SalesItemListener mItemListener;
 
-        public ViewHolder(View itemView, SalesOrderDisplayActivity.SalesItemListener listener) {
+        public ViewHolder(View itemView,SalesOrderDisplayActivity.SalesItemListener listener) {
             super(itemView);
             mItemListener = listener;
             salesId = itemView.findViewById(R.id.sales_id);
             salesDate = itemView.findViewById(R.id.sales_date);
             customerName = itemView.findViewById(R.id.customer_name);
-            salesAmount = itemView.findViewById(R.id.sales_amount);
+            salesAmount = itemView.findViewById(R.id.total);
             salesPerson = itemView.findViewById(R.id.sales_person);
             docId  = itemView.findViewById(R.id.doc_id);
             totalItems = itemView.findViewById(R.id.total_items);
             rvProductList =itemView.findViewById(R.id.list_details);
+            salesDetailArrayAdapter = new SalesOrderAdapter(productsDetailList, false);
+            mLayoutManager = new LinearLayoutManager(itemView.getContext());
+            rvProductList.setLayoutManager(mLayoutManager);
+            rvProductList.setAdapter(salesDetailArrayAdapter);
             //itemView.setOnClickListener(this);
         }
 

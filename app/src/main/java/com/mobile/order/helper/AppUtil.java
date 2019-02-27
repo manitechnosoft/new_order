@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.mobile.order.R;
 import com.mobile.order.model.SalesFilter;
+import com.mobile.order.model.SalesPerson;
 
 import org.greenrobot.greendao.annotation.NotNull;
 
@@ -169,7 +170,13 @@ public class AppUtil {
         SalesFilter aFilter = new SalesFilter();
         FirestoreUtil util=new FirestoreUtil();
         aFilter.setCustomerName(customer!=null && customer.getSelectedItemPosition()!=0 ?customer.getSelectedItem().toString():"");
-        aFilter.setSalesPersonId(salesPerson!=null && salesPerson.getSelectedItemPosition()!=0 ?salesPerson.getSelectedItem().toString():"");
+        if(null!=salesPerson && salesPerson.getSelectedItemPosition()!=0){
+            Integer salesId = Integer.parseInt(salesPerson.getSelectedItem().toString());
+            aFilter.setSalesPersonId(null!=salesId?salesId.toString():"");
+        }
+        else{
+            aFilter.setSalesPersonId("");
+        }
         aFilter.setFromDate(null);
 
         if(null!=settledStatus){

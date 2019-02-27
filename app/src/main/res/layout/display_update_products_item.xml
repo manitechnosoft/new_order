@@ -42,6 +42,7 @@
     android:gravity="center"
     android:text="@string/product_id"
     android:textSize="@dimen/title_text"
+        android:maxLength="8"
     android:layout_weight="1"
     android:inputType="textNoSuggestions"/>
 
@@ -54,7 +55,8 @@
                     android:text="@string/product_name"
                     android:textSize="@dimen/title_text"
                     android:layout_weight="1"
-                    android:inputType="textNoSuggestions"/>
+                    android:inputType="textNoSuggestions"
+        android:maxLength="30"/>
 
                 </LinearLayout>
                 <TextView

@@ -12,17 +12,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.mobile.order.BaseApplication;
 import com.mobile.order.R;
-import com.mobile.order.activity.SalesOrderActivity;
 import com.mobile.order.adapter.FirestoreSalesPersons;
-import com.mobile.order.config.AppController;
 import com.mobile.order.helper.FirestoreUtil;
 import com.mobile.order.model.DaoSession;
-import com.mobile.order.model.ProductDao;
 import com.mobile.order.model.SalesOrder;
 import com.mobile.order.model.SalesPerson;
 import com.mobile.order.model.SalesPersonDao;
@@ -65,7 +62,7 @@ public class SalesIdFragment extends Fragment implements FirestoreSalesPersons {
       if (mViewHolder == null) {
       mViewHolder = inflater.inflate(R.layout.fragment_salesid, parent, false);
       ButterKnife.bind(this, mViewHolder);
-      daoSession = ((AppController) getActivity().getApplication()).getDaoSession();
+      daoSession = ((BaseApplication) getActivity().getApplication()).getDaoInstance();
       salesPersonDao = daoSession.getSalesPersonDao();
       salesPersonList = salesPersonDao.loadAll();
       loadSalesPersonSpinner(salesPersonList);
@@ -82,7 +79,7 @@ public class SalesIdFragment extends Fragment implements FirestoreSalesPersons {
         });
         Activity currentActivity = getActivity();
         nextButton = currentActivity.findViewById(R.id.next_button);
-        nextButton.setText("New Order  ");
+          nextButton.setText(" Next ");
         enableNext();
       /*  View view = inflater.inflate(R.layout.activity_main, parent, false);
         nextButton = parent.findViewById(R.id.next_button);
@@ -93,8 +90,6 @@ public class SalesIdFragment extends Fragment implements FirestoreSalesPersons {
 
   @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
-      Activity currentActivity = getActivity();
-      nextButton = currentActivity.findViewById(R.id.next_button);
       enableNext();
   }
     @Override

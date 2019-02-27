@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -21,7 +19,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,17 +32,13 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.Transaction;
+import com.mobile.order.BaseApplication;
 import com.mobile.order.R;
-import com.mobile.order.adapter.DisplayUpdateSalesPersonAdapter;
 import com.mobile.order.adapter.FirestoreProducts;
 import com.mobile.order.adapter.FirestoreSalesPersons;
-import com.mobile.order.adapter.RecyclerItemListener;
 import com.mobile.order.adapter.SalesOrderAdapter;
-import com.mobile.order.config.AppController;
 import com.mobile.order.helper.AppUtil;
 import com.mobile.order.helper.FirestoreUtil;
-import com.mobile.order.helper.FontHelper;
-import com.mobile.order.helper.Fonts;
 import com.mobile.order.model.DaoSession;
 import com.mobile.order.model.Product;
 import com.mobile.order.model.ProductDao;
@@ -65,7 +58,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class SalesOrderActivity extends AppCompatActivity implements
+public class SalesOrderActivity extends BaseActivity implements
 		FirestoreProducts, FirestoreSalesPersons {
 	String pattern = "dd-MMM-yyyy";
 	SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
@@ -120,14 +113,14 @@ Button confirmSalesOrder;
 		setContentView(R.layout.activity_sales_order);
 		ButterKnife.bind(this);
 		listDetails = findViewById(R.id.list_details);
-		daoSession = ((AppController) getApplication()).getDaoSession();
+		daoSession = ((BaseApplication) getApplication()).getDaoInstance();
 		productDao = daoSession.getProductDao();
         salesPersonDao = daoSession.getSalesPersonDao();
 		loadProductsSpinner(productDao.loadAll());
 		loadSalesPersonSpinner(salesPersonDao.loadAll());
 		setClickEventListener();
 
-		salesDetailArrayAdapter = new SalesOrderAdapter(productsDetailList);
+		salesDetailArrayAdapter = new SalesOrderAdapter(productsDetailList, true);
 		//productsDetailList.setHasFixedSize(true);
 		mLayoutManager = new LinearLayoutManager(this);
 		listDetails.setLayoutManager(mLayoutManager);

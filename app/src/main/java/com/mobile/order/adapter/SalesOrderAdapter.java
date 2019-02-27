@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -28,7 +29,7 @@ import butterknife.ButterKnife;
 public class SalesOrderAdapter extends RecyclerView.Adapter<SalesOrderAdapter.MyViewHolder> {
     private List<Product> productList;
     private Context ctx;
-
+private boolean enableDeleteFlg;
     public class MyViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.product_id)
         public TextView productId;
@@ -41,6 +42,10 @@ public class SalesOrderAdapter extends RecyclerView.Adapter<SalesOrderAdapter.My
 
         @BindView(R.id.price)
         public TextView retailPrice;
+
+        @BindView(R.id.delete)
+        ImageView delete;
+
         public View view;
         MyViewHolder(View itemView) {
             super(itemView);
@@ -50,8 +55,9 @@ public class SalesOrderAdapter extends RecyclerView.Adapter<SalesOrderAdapter.My
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public SalesOrderAdapter(List<Product> products) {
+    public SalesOrderAdapter(List<Product> products,boolean enableDeleteFlg) {
         this.productList = products;
+        this.enableDeleteFlg = enableDeleteFlg;
     }
 
     // Create new views (invoked by the layout manager)
@@ -71,6 +77,9 @@ public class SalesOrderAdapter extends RecyclerView.Adapter<SalesOrderAdapter.My
         holder.quantity.setText(productList.get(position).getQuantity().toString());
         holder.retailType.setText(productList.get(position).getRetailSaleType());
         holder.retailPrice.setText(null!=productList.get(position).getRetailSalePrice() ?productList.get(position).getRetailSalePrice().toString():"0");
+        if(!enableDeleteFlg){
+            holder.delete.setVisibility(View.GONE);
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)

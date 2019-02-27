@@ -1,13 +1,12 @@
 package com.mobile.order.activity;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.mobile.order.BaseApplication;
 import com.mobile.order.R;
 import com.mobile.order.adapter.FirestoreProducts;
 import com.mobile.order.adapter.FirestoreSalesPersons;
-import com.mobile.order.config.AppController;
 import com.mobile.order.helper.FirestoreUtil;
 import com.mobile.order.model.DaoSession;
 import com.mobile.order.model.Product;
@@ -20,7 +19,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ConfigActivity extends AppCompatActivity implements
+public class ConfigActivity  extends BaseActivity implements
         FirestoreProducts, FirestoreSalesPersons {
     DaoSession daoSession;
     private ProductDao productDao;
@@ -30,7 +29,7 @@ public class ConfigActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_config);
         ButterKnife.bind(this);
-        daoSession = ((AppController) getApplication()).getDaoSession();
+        daoSession = ((BaseApplication) this.getApplication()).getDaoInstance();
         productDao = daoSession.getProductDao();
         salesPersonDao = daoSession.getSalesPersonDao();
 

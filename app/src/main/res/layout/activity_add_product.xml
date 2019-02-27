@@ -48,11 +48,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:hint="Product Name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/lbl_product_name"
-            tools:layout_editor_absoluteY="56dp" />
-        <EditText
+            app:layout_constraintTop_toBottomOf="@+id/app_bar_layout" />
+        <TextView
             android:id="@+id/productname_error_msg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -67,6 +68,8 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:text="@string/product_id"
+            android:maxLength="8"
+            android:inputType="number"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/productname_error_msg" />
 
@@ -76,6 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:hint="Product Id"
+            android:maxLength="10"
             app:layout_constraintBaseline_toBaselineOf="@+id/lbl_product_id"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/lbl_product_id" />

@@ -17,7 +17,7 @@ import com.mobile.order.R;
 import com.mobile.order.camera.CameraModule;
 import com.mobile.order.camera.CameraSupport;
 
-public class OnOffCameraFlashlight extends AppCompatActivity {
+public class OnOffCameraFlashlight extends BaseActivity {
 
     ToggleButton toggleButton;
     Camera camera;

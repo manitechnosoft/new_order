@@ -21,6 +21,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
 import com.mobile.order.activity.SalesOrderActivity;
 import com.mobile.order.activity.SalesOrderDisplayActivity;
+import com.mobile.order.activity.SalesOrderLandActivity;
+import com.mobile.order.activity.SuccessActivity;
 import com.mobile.order.adapter.FirestoreProducts;
 import com.mobile.order.adapter.FirestoreSales;
 import com.mobile.order.adapter.FirestoreSalesFilter;
@@ -119,7 +121,7 @@ public class FirestoreUtil {
             public void onComplete(@NonNull Task<QuerySnapshot> task){
                 if (task.isSuccessful()) {
                     if(task.getResult().size()==0){
-                        Toast.makeText(ctx, "Sales Person Not Existed!",
+                        Toast.makeText(ctx, "Sales Person Not is not existed in database!",
                                 Toast.LENGTH_SHORT).show();
                     }
                     else{
@@ -150,8 +152,8 @@ public class FirestoreUtil {
     public void getSalesWithFilter(final Object ctx, SalesFilter selectionFilter, final Boolean loadCustomerSpinner) {
 
         final List<SalesOrder> salesList = new ArrayList<>();
-        Query query = FirestoreUtil.getSalesCollectionRef()
-                .whereGreaterThanOrEqualTo("updatedOn",selectionFilter.getFromDate());
+        CollectionReference collectionRef =FirestoreUtil.getSalesCollectionRef();
+        Query query = collectionRef.whereGreaterThanOrEqualTo("updatedOn",selectionFilter.getFromDate());
         query = query.whereLessThanOrEqualTo("updatedOn",selectionFilter.getToDate());
         if(selectionFilter.getCustomerName()!=null && !selectionFilter.getSalesPersonId().isEmpty()){
             query = query.whereEqualTo("salesPersonId",selectionFilter.getSalesPersonId());
@@ -162,6 +164,8 @@ public class FirestoreUtil {
         else if(selectionFilter.isFullySettled()!=null && !selectionFilter.isFullySettled()){
             query = query.whereEqualTo("fullSettlement",false);
         }
+        query = query.orderBy("updatedOn", Query.Direction.DESCENDING);
+        query = query.orderBy("id", Query.Direction.DESCENDING);
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task){
@@ -187,7 +191,8 @@ public class FirestoreUtil {
                     String err = task.getException().getMessage();
                     err = err+"";
 
-                    Toast.makeText((Context)ctx, err, Toast.LENGTH_SHORT).show();
+                    if(ctx instanceof Context)
+                        Toast.makeText((Context)ctx, err, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -251,10 +256,8 @@ public class FirestoreUtil {
                                 }
                             }
                         });
-                        Toast.makeText(context, "Updated with reference ID: "+documentReference.getId(),
-                                Toast.LENGTH_SHORT).show();
-
-                        Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+                        SalesOrderLandActivity landActivity=(SalesOrderLandActivity)context;
+                        landActivity.gotoSuccessActivity();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

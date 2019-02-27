@@ -11,9 +11,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,10 +23,10 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.mobile.order.BaseApplication;
 import com.mobile.order.R;
 import com.mobile.order.adapter.FirestoreSales;
 import com.mobile.order.adapter.SalesAdapterGroupByDate;
-import com.mobile.order.config.AppController;
 import com.mobile.order.helper.AppUtil;
 import com.mobile.order.helper.FirestoreUtil;
 import com.mobile.order.helper.FontHelper;
@@ -44,13 +42,12 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SalesOrderDisplayActivity extends AppCompatActivity implements FirestoreSales {
+public class SalesOrderDisplayActivity extends BaseActivity implements FirestoreSales {
 
 	@BindView(R.id.toolbar)
 	Toolbar toolbar;
@@ -70,9 +67,6 @@ public class SalesOrderDisplayActivity extends AppCompatActivity implements Fire
 	@BindView(R.id.card_view_no_records)
 	CardView cardviewNoRecords;
 
-	@BindView(R.id.order_refresher)
-	SwipeRefreshLayout orderRefresher;
-
 	RecyclerView recyclerView;
 	//ListView listView;
 	List<SalesOrder>salesNewList = new ArrayList<>();
@@ -90,7 +84,7 @@ public class SalesOrderDisplayActivity extends AppCompatActivity implements Fire
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_sales_display_with_filter);
 		ButterKnife.bind(this);
-		daoSession = ((AppController) getApplication()).getDaoSession();
+		daoSession = ((BaseApplication) getApplication()).getDaoInstance();
 		salesPersonDao = daoSession.getSalesPersonDao();
 		salesPeopleFromLocal = salesPersonDao.loadAll();
 		//listView = findViewById(R.id.list_view);
@@ -122,21 +116,6 @@ public class SalesOrderDisplayActivity extends AppCompatActivity implements Fire
 		}
 		setupListView();
 		initializeToolbar();
-		initLayout();
-	}
-	private void initLayout(){
-		orderRefresher.setColorSchemeResources(R.color.darkSkyBlue);
-		orderRefresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-			@Override
-			public void onRefresh() {
-				if (AppUtil.isNetworkAvailable(getApplicationContext())) {
-					fetchSalesList();
-				} else {
-					AppUtil.showOffline(Objects.requireNonNull(SalesOrderDisplayActivity.this));
-				}
-				orderRefresher.setRefreshing(false);
-			}
-		});
 	}
 
 	@Override
@@ -328,14 +307,15 @@ private SalesPerson getSalesPersonById(String salesPersonId){
 					this.getResources().getString(R.string.sales_orders_list),
 					FontHelper.getFont(Fonts.MULI_SEMI_BOLD))
 			);
-			if(!salesFlg && !deliveryFlg){
+			//if(!salesFlg && !deliveryFlg){
 				supportActionBar.setDisplayHomeAsUpEnabled(true);
 				supportActionBar.setDisplayShowHomeEnabled(true);
 				supportActionBar.setHomeAsUpIndicator(getResources().getDrawable(R.drawable.back_arrow_dark));
 				supportActionBar.setDisplayShowTitleEnabled(true);
 				supportActionBar.setCustomView(R.layout.activity_main);
 				supportActionBar.setElevation(4);
-			}
+
+			//}
 		}
 	}
 	@Override
@@ -345,6 +325,7 @@ private SalesPerson getSalesPersonById(String salesPersonId){
 			if(!salesFlg && !deliveryFlg) {
 				Intent intent = new Intent(this, MainActivity.class);
 				this.startActivity(intent);
+				finish();
 			}
 			return true;
 		}

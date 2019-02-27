@@ -27,12 +27,15 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.mobile.order.BaseApplication;
 import com.mobile.order.R;
 import com.mobile.order.adapter.FirestoreSalesPersons;
 import com.mobile.order.helper.AppUtil;
 import com.mobile.order.helper.FirestoreUtil;
+import com.mobile.order.model.DaoSession;
 import com.mobile.order.model.SalesFilter;
 import com.mobile.order.model.SalesPerson;
+import com.mobile.order.model.SalesPersonDao;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -71,10 +74,12 @@ public class FilterSalesDialogFragment extends DialogFragment implements Firesto
     @BindView(R.id.to_date)
     EditText toDate;
 
+    DaoSession daoSession;
+    SalesPersonDao salesPersonDao;
+    List<SalesPerson> salesPersonDaoList = new ArrayList<>();
 
     List<String> salesPersonList = new ArrayList<>();
     ArrayAdapter<String> customerAdapter;
-    Boolean loadCustomerSpinner = true;
     private FilterSalesDialogFragment.FilterListener mFilterListener;
     FirestoreUtil util=new FirestoreUtil();
     @Override
@@ -96,7 +101,11 @@ public class FilterSalesDialogFragment extends DialogFragment implements Firesto
         cal.add(Calendar.DATE, -90);
         aFilter.setFromDate(cal.getTime());
         SalesOrderDisplayActivity parentActivity = (SalesOrderDisplayActivity) getActivity();
-         util.getSalesPersonList(parentActivity,this);
+        daoSession = ((BaseApplication) getActivity().getApplication()).getDaoInstance();
+        salesPersonDao = daoSession.getSalesPersonDao();
+        salesPersonDaoList = salesPersonDao.loadAll();
+        loadSalesPersonSpinner(salesPersonDaoList);
+         //util.getSalesPersonList(parentActivity,this);
         loadSpinnerData();
 
         fromDate.setInputType(InputType.TYPE_NULL);
@@ -130,7 +139,7 @@ public class FilterSalesDialogFragment extends DialogFragment implements Firesto
     public void onSearchClicked() {
         SalesFilter aFilter= AppUtil.getSalesFilters(null, salesPerson, fromDate, toDate, null,0);
         SalesOrderDisplayActivity parentActivity = (SalesOrderDisplayActivity) getActivity();
-        util.getSalesWithFilter(this,aFilter,false);
+        util.getSalesWithFilter(parentActivity,aFilter,false);
         /*if (mFilterListener != null) {
             mFilterListener.onFilter(aFilter);
         }*/
@@ -145,12 +154,17 @@ public class FilterSalesDialogFragment extends DialogFragment implements Firesto
 
     @OnClick(R.id.button_clear)
     public void onClearClicked() {
+        clearFields();
+    }
+    @OnClick(R.id.close_dialog)
+    public void onCloseClicked() {
+        dismiss();
+    }
+    private void clearFields(){
         salesPerson.setSelection(0);
         fromDate.setText("");
         toDate.setText("");
-
     }
-
   /*  @Nullable
     private String getSelectedSortBy() {
         String selected = (String) mSortSpinner.getSelectedItem();
@@ -209,5 +223,14 @@ public class FilterSalesDialogFragment extends DialogFragment implements Firesto
         salesPersonList.addAll(fileteredCustomerList);
         customerAdapter.notifyDataSetChanged();
     }
+    public void loadSalesPersonSpinner(List<SalesPerson> personsList){
+        if(personsList.size()==0){
+            FirestoreUtil util=new FirestoreUtil();
+            util.getSalesPersonList(getActivity(), FilterSalesDialogFragment.this);
+        }
+        else{
+            loadSalesPersons(personsList);
+        }
 
+    }
 }

@@ -16,21 +16,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.SetOptions;
+import com.mobile.order.BaseApplication;
 import com.mobile.order.R;
 import com.mobile.order.activity.SalesOrderActivity;
 import com.mobile.order.activity.SalesOrderDisplayActivity;
-import com.mobile.order.config.AppController;
 import com.mobile.order.helper.FirestoreUtil;
 import com.mobile.order.model.DaoSession;
 import com.mobile.order.model.SalesOrder;
@@ -69,7 +65,7 @@ public class SalesAdapterGroupByDate extends RecyclerView.Adapter<SalesAdapterGr
 
         LayoutInflater inflater = LayoutInflater.from(context);
         //View noteView = inflater.inflate(R.layout.sales_item_by_date, parent, false);
-        daoSession = ((AppController) currentActivity.getApplication()).getDaoSession();
+        daoSession = ((BaseApplication) currentActivity.getApplication()).getDaoInstance();
        // salesDetailDao = daoSession.getSalesOrderDao();
         return new ViewHolder(v, mItemListener);
     }
@@ -87,7 +83,7 @@ public class SalesAdapterGroupByDate extends RecyclerView.Adapter<SalesAdapterGr
         //viewHolder.salesListByMonth.setLayoutManager(mLayoutManager);
         viewHolder.salesListByMonth.setItemAnimator(new DefaultItemAnimator());
 
-        int numColumns = 2;
+        int numColumns = 1;
         viewHolder.salesListByMonth.setHasFixedSize(true);
         viewHolder.salesListByMonth.setLayoutManager(new GridLayoutManager(viewHolder.salesListByMonth.getContext(), numColumns));
 
@@ -99,10 +95,15 @@ public class SalesAdapterGroupByDate extends RecyclerView.Adapter<SalesAdapterGr
                     public void onClickItem(View v, int position) {
                         CardView cardView=(CardView)v;
                         LinearLayout linearLayout = (LinearLayout)cardView.getChildAt(0);
-                        LinearLayout innerlinearLayout = (LinearLayout)linearLayout.getChildAt(0);
-                        TextView salesIdElement = (TextView)innerlinearLayout.getChildAt(0);
-                        TextView custNameElement = (TextView)linearLayout.getChildAt(1);
-                        TextView docIdElement = (TextView)linearLayout.getChildAt(6);
+                        TextView docIdElement = (TextView)linearLayout.getChildAt(0);
+
+                        LinearLayout innerlinearLayout =(LinearLayout)((ScrollView) ((LinearLayout)linearLayout.getChildAt(1)).getChildAt(0)).getChildAt(0);
+                        LinearLayout salesIdLayout = (LinearLayout)innerlinearLayout.getChildAt(0);
+                        TextView salesIdElement = (TextView)salesIdLayout.getChildAt(1);
+
+                        LinearLayout customerLayout = (LinearLayout)innerlinearLayout.getChildAt(2);
+                        TextView custNameElement = (TextView)customerLayout.getChildAt(1);
+
                         showOptions(salesIdElement.getText().toString() , custNameElement.getText().toString() ,docIdElement.getText().toString() );
                     }
 
@@ -120,18 +121,22 @@ public class SalesAdapterGroupByDate extends RecyclerView.Adapter<SalesAdapterGr
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         String[] options ;
-            options = new String[2];
+            options = new String[3];
 
-            options[0] = "Edit " + salesId+ " "+custName;
-            options[1] = "Delete " + salesId+ " "+custName;
+            options[0] = "Print " + salesId+ " "+custName;
+            options[1] = "Edit " + salesId+ " "+custName;
+            options[2] = "Delete " + salesId+ " "+custName;
 
 
         alertDialogBuilder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if(which == 0){
+                    //Toast.makeText(get)
+                }
+                else if(which == 1){
                     proceedToUpdateItem(salesId, docId);
-                }else if(which == 1){
+                }else if(which == 2){
                     deleteSales(salesId, docId);
                 }
 

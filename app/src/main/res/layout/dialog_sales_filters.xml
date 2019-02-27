@@ -1,21 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/filters_form"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp">
-<LinearLayout
+<RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true"
+    android:id="@+id/llTitle">
     <TextView
+        android:id="@+id/tvTitle"
         style="@style/AppTheme.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:text="Filters" />
     <View
+        android:id="@+id/empty"
+        android:layout_toRightOf="@+id/tvTitle"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_weight=".50" />
@@ -23,13 +28,17 @@
         android:id="@+id/button_clear_filter"
         android:layout_width="25dp"
         android:layout_height="25dp"
+
+        android:layout_toRightOf="@+id/empty"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         app:srcCompat="@drawable/filter"  />
-</LinearLayout>
+</RelativeLayout>
     <RelativeLayout
+        android:id="@+id/rl_category"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/llTitle">
 
         <ImageView
             android:id="@+id/icon_category1"
@@ -45,8 +54,10 @@
 
     </RelativeLayout>
     <RelativeLayout
+        android:id="@+id/rlFromDate"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_category">
 
         <ImageView
             android:id="@+id/cal_category"
@@ -64,8 +75,10 @@
 
     </RelativeLayout>
     <RelativeLayout
+        android:id="@+id/rlToDate"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rlFromDate">
 
         <ImageView
             android:id="@+id/cal_to_category"
@@ -104,10 +117,12 @@
     </RelativeLayout>-->
 
     <!-- Cancel and apply buttons -->
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="right"
+        android:layout_below="@+id/rlToDate">
 
         <View
             android:layout_width="0dp"
@@ -130,12 +145,24 @@
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_weight="1"
+            android:layout_toRightOf="@+id/button_clear"
             android:drawableLeft="@drawable/checkmark_50"
             android:drawableTint="@color/white"
             android:text="Apply"
             android:theme="@style/ThemeOverlay.Button" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/close_dialog"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignTop="@+id/llTitle"
+        android:layout_alignRight="@+id/llTitle"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:paddingTop="-20dp"
+        android:tint="@color/black"
+        app:srcCompat="@drawable/close" />
+</RelativeLayout >
 

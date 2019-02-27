@@ -6,14 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.Spanned;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,14 +19,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mobile.order.listener.DecimalDigitsInputFilter;
-import com.mobile.order.listener.RecyclerTouchListener;
+import com.mobile.order.BaseApplication;
 import com.mobile.order.R;
 import com.mobile.order.adapter.FirestoreProducts;
 import com.mobile.order.adapter.SalesOrderAdapter;
-import com.mobile.order.config.AppController;
+import com.mobile.order.filter.MoneyValueFilter;
 import com.mobile.order.helper.AppUtil;
 import com.mobile.order.helper.FirestoreUtil;
+import com.mobile.order.listener.RecyclerTouchListener;
 import com.mobile.order.model.DaoSession;
 import com.mobile.order.model.Product;
 import com.mobile.order.model.ProductDao;
@@ -63,8 +58,6 @@ public class AddSalesProductFragment extends Fragment implements FirestoreProduc
   @BindView(R.id.type)
   Spinner productType;
 
-  @BindView(R.id.add_sales_detail)
-  FloatingActionButton addSalesDetail;
     @BindView(R.id.add_sales_product)
     Button addProduct;
 
@@ -92,7 +85,7 @@ public class AddSalesProductFragment extends Fragment implements FirestoreProduc
       mViewHolder = inflater.inflate(R.layout.fragment_addsales_product, parent, false);
       ButterKnife.bind(this, mViewHolder);
       price.setEnabled(false);
-      daoSession = ((AppController) getActivity().getApplication()).getDaoSession();
+      daoSession = ((BaseApplication) getActivity().getApplication()).getDaoInstance();
       productDao = daoSession.getProductDao();
       productsList = productDao.loadAll();
       if(productsList.size()==0){
@@ -110,8 +103,6 @@ public class AddSalesProductFragment extends Fragment implements FirestoreProduc
 
   @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
-    //daoSession = ((AppController) getActivity().getApplication()).getDaoSession();
-   // productDao = daoSession.getProductDao();
     productsList = productDao.loadAll();
     if(productsList.size()==0){
       FirestoreUtil util=new FirestoreUtil();
@@ -130,47 +121,17 @@ public class AddSalesProductFragment extends Fragment implements FirestoreProduc
         }
       }
     });
-    addSalesDetail.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        insertSalesDetailItem();
-      }
-    });
+
     addProduct.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View v) {
               insertSalesDetailItem();
           }
       });
-    quantity.addTextChangedListener(new TextWatcher() {
+    //quantity.addTextChangedListener(new DecimalFilter(quantity, getActivity(),8,2));
+    quantity.setKeyListener(new MoneyValueFilter());
 
-      public void afterTextChanged(Editable s) {}
-
-      public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-      public void onTextChanged(CharSequence cs, int start, int before, int count) {
-        if(null!=cs){
-          try{
-            Float number = Float.parseFloat(cs.toString());
-            String strMrp = mrp.getText().toString();
-            if(null!=number && !strMrp.isEmpty()){
-              Double productMrp = Double.parseDouble(strMrp);
-              Double total =  number * productMrp;
-              Double roundedPrice = AppUtil.round(total,3);
-              price.setText(roundedPrice.toString());
-            }
-
-          }
-          catch(NumberFormatException ex){
-            price.setText("");
-          }
-
-        }
-
-      }
-    });
-
-    salesDetailArrayAdapter = new SalesOrderAdapter(productsDetailList);
+    salesDetailArrayAdapter = new SalesOrderAdapter(productsDetailList, true);
     //productsDetailList.setHasFixedSize(true);
     mLayoutManager = new LinearLayoutManager(getContext());
     listDetails.setLayoutManager(mLayoutManager);
@@ -273,7 +234,6 @@ private Product getProduct(String productCode){
         salesDetailArrayAdapter.notifyDataSetChanged();
        // monitorChangeFlg = true;
        // calculateTotal();
-        Toast.makeText(getContext(), "Sales Detail Inserted", Toast.LENGTH_SHORT).show();
       }
     }
     clearFields();

@@ -78,5 +78,10 @@
         android:layout_height="wrap_content"
         android:text="Turn Off/On"
         android:layout_width="fill_parent"></Button>
+    <Button
+        android:id="@+id/log_out"
+        android:layout_height="wrap_content"
+        android:text="@string/logout"
+        android:layout_width="fill_parent"></Button>
 </LinearLayout>
 </android.support.constraint.ConstraintLayout>

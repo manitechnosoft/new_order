@@ -95,6 +95,7 @@
                             android:layout_width="80dp"
                             android:layout_height="wrap_content"
                             android:ems="10"
+                            android:maxLength="8"
                             android:inputType="numberDecimal"/>
 
 
@@ -188,16 +189,5 @@
             </LinearLayout>
 
         </LinearLayout>
-
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/add_sales_detail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_add_white_24dp"
-        app:backgroundTint="?android:attr/colorPrimary"
-        app:fabSize="normal" />
 
 </android.support.design.widget.CoordinatorLayout >

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.MainActivity">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+    <ImageView
+        android:id="@+id/success_icon"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_centerVertical="true"
+        app:srcCompat="@drawable/app_store_star"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Successful! Print will start!"
+        android:textSize="25dp"/>
+
+    <Button
+        android:id="@+id/ok"
+        android:layout_height="wrap_content"
+        android:text="Ok"
+        android:layout_width="fill_parent"
+        android:background="@drawable/round_corner_button"
+        android:textColor="@color/colorPrimary"></Button>
+
+</LinearLayout>
+</android.support.constraint.ConstraintLayout>

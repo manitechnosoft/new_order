@@ -18,10 +18,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.mobile.order.BaseApplication;
 import com.mobile.order.R;
 import com.mobile.order.adapter.DisplayUpdateProductsAdapter;
 import com.mobile.order.adapter.FirestoreProducts;
-import com.mobile.order.config.AppController;
 import com.mobile.order.helper.AppUtil;
 import com.mobile.order.helper.FirestoreUtil;
 import com.mobile.order.helper.FontHelper;
@@ -37,7 +37,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class DisplayAndUpdateProductActivity extends AppCompatActivity implements FirestoreProducts {
+public class DisplayAndUpdateProductActivity  extends BaseActivity implements FirestoreProducts {
     @BindView(R.id.product_list)
     RecyclerView productList;
 
@@ -63,7 +63,7 @@ public class DisplayAndUpdateProductActivity extends AppCompatActivity implement
         // specify an adapter (see also next example)
 
         //getAllProducts();
-        daoSession = ((AppController) getApplication()).getDaoSession();
+        daoSession = ((BaseApplication) getApplication()).getDaoInstance();
         productDao = daoSession.getProductDao();
 
         FirestoreUtil util=new FirestoreUtil();
@@ -86,6 +86,7 @@ public class DisplayAndUpdateProductActivity extends AppCompatActivity implement
     }
     @OnClick(R.id.btn_confirm)
     public void updateProducts(View button) {
+
         for(Product aProduct:rvProductList){
             if(aProduct.getProductName().isEmpty()){
                 Toast productErr = Toast.makeText(getApplicationContext(),
@@ -96,6 +97,7 @@ public class DisplayAndUpdateProductActivity extends AppCompatActivity implement
                 break;
             }
         }
+        updateProducts.setEnabled(false);
 
         for(final Product aProduct:rvProductList){
             final DocumentReference productDocRef = FirestoreUtil.getProductCollectionRef().document(aProduct.getProductDocId());
@@ -135,8 +137,8 @@ public class DisplayAndUpdateProductActivity extends AppCompatActivity implement
     @OnClick(R.id.cancel)
     public void cancel(View view) {
         Intent intent = new Intent(this, MainActivity.class);
-
         startActivity(intent);
+        finish();
     }
     /**
      * Method used to initialize toolbar

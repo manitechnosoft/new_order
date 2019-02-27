@@ -18,7 +18,7 @@
     <string name="manufacturer_name">Manufacturer</string>
     <string name="mobile">Mobile</string>
     <string name="total">Sales Total</string>
-    <string name="no_of_items">Total Items</string>
+    <string name="no_of_items">Total Items: </string>
     <string name="retail">Retail Price</string>
     <string name="mrp">MRP</string>
     <string name="cost">Cost</string>
@@ -82,4 +82,5 @@
     <string name="submit_confirm_button">Place order</string>
 
     <string name="turn_on">Turn On and Off Flashlight Programmatically</string>
+    <string name="logout">Logout</string>
 </resources>

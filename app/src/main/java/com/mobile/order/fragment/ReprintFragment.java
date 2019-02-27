@@ -1,5 +1,6 @@
 package com.mobile.order.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,7 +11,9 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 
 import com.mobile.order.R;
+import com.mobile.order.activity.MainActivity;
 import com.mobile.order.activity.SalesOrderLandActivity;
+import com.mobile.order.activity.SalesOrderSimpleDisplayActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,5 +57,10 @@ public class ReprintFragment extends Fragment {
         }
         return mViewHolder;
     }
-
+    @OnClick(R.id.re_print)
+    public void rePrint(){
+        Intent intent = new Intent(getActivity(), SalesOrderSimpleDisplayActivity.class);
+        startActivity(intent);
+        getActivity().finish();
+    }
 }

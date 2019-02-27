@@ -30,21 +30,6 @@
     </android.support.design.widget.AppBarLayout>
 
     <TextView
-        android:id="@+id/TextViewTitle"
-        android:layout_width="match_parent"
-        android:layout_height="23dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/title_product"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout" />
-
-    <TextView
         android:id="@+id/tvSalesId"
         android:layout_width="wrap_content"
         android:layout_height="33dp"
@@ -52,7 +37,7 @@
         android:layout_marginTop="8dp"
         android:text="@string/sales_person_id"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TextViewTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout" />
 
     <EditText
         android:id="@+id/sales_person_id"
@@ -62,7 +47,9 @@
         app:layout_constraintStart_toEndOf="@id/tvSalesId"
         app:layout_constraintBaseline_toBaselineOf="@+id/tvSalesId"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteX="8dp" />
+        tools:layout_editor_absoluteX="8dp"
+        android:maxLength="10"
+        android:inputType="number"/>
 
     <TextView
         android:id="@+id/sales_id_error_msg"
@@ -93,6 +80,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:hint="@string/first_name"
+        android:maxLength="30"
         app:layout_constraintStart_toEndOf="@id/tv_first_name"
         app:layout_constraintBaseline_toBaselineOf="@+id/tv_first_name"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -112,6 +100,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:hint="@string/last_name"
+        android:maxLength="30"
         app:layout_constraintStart_toEndOf="@id/tv_last_name"
         app:layout_constraintBaseline_toBaselineOf="@+id/tv_last_name"
         app:layout_constraintEnd_toEndOf="parent" />

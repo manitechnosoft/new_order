@@ -2,12 +2,14 @@ package com.mobile.order.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mobile.order.BaseApplication;
 import com.mobile.order.R;
 
 import butterknife.BindView;
@@ -15,15 +17,18 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.mobile.order.model.Config;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     @BindView(R.id.scanned_text)
     TextView scannedText;
+    private Config config;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        config = ((BaseApplication) getApplication()).getConfig();
     }
     @OnClick(R.id.config)
     public void landConfig() {
@@ -78,6 +83,10 @@ public class MainActivity extends AppCompatActivity {
     public void onAndOff() {
         Intent intent = new Intent(MainActivity.this, OnOffCameraFlashlight.class);
         startActivity(intent);
+    }
+    @OnClick(R.id.log_out)
+    public void logout() {
+        config.logoutUser(this);
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

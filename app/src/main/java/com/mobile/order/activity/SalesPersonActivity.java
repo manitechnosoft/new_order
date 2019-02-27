@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -22,13 +21,11 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.mobile.order.BaseApplication;
 import com.mobile.order.R;
 import com.mobile.order.adapter.FirestoreSalesPersons;
-import com.mobile.order.config.AppController;
-import com.mobile.order.helper.AppUtil;
 import com.mobile.order.helper.FirestoreUtil;
 import com.mobile.order.model.DaoSession;
-import com.mobile.order.model.Product;
 import com.mobile.order.model.SalesPerson;
 import com.mobile.order.model.SalesPersonDao;
 
@@ -38,7 +35,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SalesPersonActivity extends AppCompatActivity implements FirestoreSalesPersons {
+public class SalesPersonActivity extends BaseActivity implements FirestoreSalesPersons {
     private Query mQuery;
     private ActionBar supportActionBar;
 
@@ -47,6 +44,9 @@ public class SalesPersonActivity extends AppCompatActivity implements FirestoreS
 
     @BindView(R.id.cancel_product)
     Button cancel;
+    @BindView(R.id.add_sales_person)
+    Button addSalesPerson;
+
     DaoSession daoSession;
     SalesPersonDao salesPersonDao;
 
@@ -56,7 +56,7 @@ public class SalesPersonActivity extends AppCompatActivity implements FirestoreS
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_sales_person);
         ButterKnife.bind(this);
-        daoSession = ((AppController) getApplication()).getDaoSession();
+        daoSession = ((BaseApplication) getApplication()).getDaoInstance();
         salesPersonDao = daoSession.getSalesPersonDao();
         initToolBar();
     }
@@ -87,6 +87,7 @@ public class SalesPersonActivity extends AppCompatActivity implements FirestoreS
     }
     @OnClick(R.id.add_sales_person)
     public void addPerson(View button) {
+        addSalesPerson.setEnabled(false);
         SalesPerson aPerson = prepareSalesPerson();
         validatePerson( aPerson);
 
@@ -95,8 +96,8 @@ public class SalesPersonActivity extends AppCompatActivity implements FirestoreS
     @OnClick(R.id.cancel_product)
     public void cancel(View view) {
         Intent intent = new Intent(this, MainActivity.class);
-
         startActivity(intent);
+        finish();
     }
 private SalesPerson prepareSalesPerson(){
     final EditText personIdField = findViewById(R.id.sales_person_id);
@@ -129,6 +130,8 @@ private SalesPerson prepareSalesPerson(){
                                     public void onSuccess(DocumentReference documentReference) {
                                         Toast.makeText(SalesPersonActivity.this, "Added Sales Person with reference ID: "+documentReference.getId(),
                                                 Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(SalesPersonActivity.this, MainActivity.class);
+                                        startActivity(intent);
                                         //update in local database
                                         FirestoreUtil util=new FirestoreUtil();
                                         util.getSalesPersonList(SalesPersonActivity.this,null);
@@ -184,15 +187,20 @@ private SalesPerson prepareSalesPerson(){
 
     private boolean validatePerson(final SalesPerson aPerson){
         boolean validFlg = true;
+        String validationMessage = "";
         if(TextUtils.isEmpty(aPerson.getSalesPersonId()))
         {
-            AppUtil.longToast(this,"Sales Person Id is required.");
+            validationMessage = validationMessage +"Sales Person Id is required.";
             validFlg = false;
         }
         if(TextUtils.isEmpty(aPerson.getFirstName()))
         {
-            AppUtil.longToast(this,"First Name is required.");
+            validationMessage = validationMessage +"\nFirst Name is required.";
             validFlg = false;
+        }
+        if(!validFlg){
+            Toast.makeText(getBaseContext(), validationMessage, Toast.LENGTH_SHORT).show();
+            addSalesPerson.setEnabled(true);
         }
         return validFlg;
     }

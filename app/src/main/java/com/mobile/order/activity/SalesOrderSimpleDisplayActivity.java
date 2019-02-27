@@ -17,20 +17,21 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.mobile.order.BaseApplication;
 import com.mobile.order.R;
 import com.mobile.order.adapter.FirestoreSales;
 import com.mobile.order.adapter.SalesAdapterGroupByDate;
-import com.mobile.order.config.AppController;
 import com.mobile.order.helper.AppUtil;
 import com.mobile.order.helper.FirestoreUtil;
 import com.mobile.order.helper.FontHelper;
 import com.mobile.order.helper.Fonts;
+import com.mobile.order.model.Config;
 import com.mobile.order.model.DaoSession;
 import com.mobile.order.model.SalesFilter;
 import com.mobile.order.model.SalesOrder;
@@ -44,8 +45,8 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-public class SalesOrderSimpleDisplayActivity extends AppCompatActivity implements FirestoreSales {
-
+public class SalesOrderSimpleDisplayActivity extends BaseActivity implements FirestoreSales {
+	private Config config;
 	@BindView(R.id.toolbar)
     Toolbar toolbar;
 	@BindView(R.id.filter_bar)
@@ -57,7 +58,6 @@ public class SalesOrderSimpleDisplayActivity extends AppCompatActivity implement
 	@BindView(R.id.add_sales_order)
 	FloatingActionButton floatingAddSalesOrder;
 
-
 	//ListView listView;
 	List<SalesOrder>salesNewList = new ArrayList<>();
 	Map<String,List<SalesOrder>> salesMapByMonthAndYear = new HashMap<>();
@@ -66,28 +66,32 @@ public class SalesOrderSimpleDisplayActivity extends AppCompatActivity implement
 	private SalesAdapterGroupByDate salesAdapterGroupByDate;
 	FirestoreUtil util=new FirestoreUtil();
 	private FilterSalesDialogFragment mFilterDialog;
+	boolean salesFlg,deliveryFlg;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_sales_display_with_filter);
 		ButterKnife.bind(this);
-		daoSession = ((AppController) getApplication()).getDaoSession();
+		daoSession = ((BaseApplication) getApplication()).getDaoInstance();
 		//listView = findViewById(R.id.list_view);
 		mFilterDialog = new FilterSalesDialogFragment();
-
+		Bundle bundle = getIntent().getExtras();
+		if(null!=bundle) {
+			salesFlg = bundle.getBoolean("saleFlg");
+			deliveryFlg = bundle.getBoolean("deliveryFlg");
+		}
 		SalesItemListener mItemListener = new SalesItemListener() {
 			@Override
 			public void onNoteClick(SalesOrder clickedSale) {
 				//mActionsListener.openNoteDetails(clickedNote);
 			}
 		};
-
 		setupListView();
 		initializeToolbar();
 		filterBarContainer.setVisibility(View.GONE);
 		filterBar.setVisibility(View.GONE);
+		config = ((BaseApplication) getApplication()).getConfig();
 	}
-
 
 	@Override
 	protected void onResume() {
@@ -105,10 +109,10 @@ public class SalesOrderSimpleDisplayActivity extends AppCompatActivity implement
 		RecyclerView recyclerView = findViewById(R.id.sales_list_holder);
 		//DividerItemDecoration dividerItemDecoration =new com.google.firebase.quickstart.auth.greendao.DividerItemDecoration(ContextCompat.getDrawable(getApplicationContext(), R.drawable.scissors_50));
 		recyclerView.addItemDecoration(new DividerItemDecoration(ContextCompat.getDrawable(getApplicationContext(), R.drawable.round_close)));
-		recyclerView.setHasFixedSize(true);
+		//recyclerView.setHasFixedSize(true);
 		//recyclerView.setLayoutManager(llm);
 		int numColumns = 2;
-		recyclerView.setHasFixedSize(true);
+		//recyclerView.setHasFixedSize(true);
 		//recyclerView.setLayoutManager(new GridLayoutManager(this, numColumns));
 		RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
 		recyclerView.setLayoutManager(mLayoutManager);
@@ -257,26 +261,42 @@ public class SalesOrderSimpleDisplayActivity extends AppCompatActivity implement
 		ActionBar supportActionBar = getSupportActionBar();
 		if (supportActionBar != null) {
 			supportActionBar.setDisplayHomeAsUpEnabled(true);
-			supportActionBar.setDisplayShowHomeEnabled(true);
+			//supportActionBar.setDisplayShowHomeEnabled(true);
 			supportActionBar.setTitle(AppUtil.applyFontStyle(
 					this.getResources().getString(R.string.sales_orders_list),
 					FontHelper.getFont(Fonts.MULI_SEMI_BOLD))
 			);
-			supportActionBar.setHomeAsUpIndicator(getResources().getDrawable(R.drawable.back_arrow_dark));
 			supportActionBar.setDisplayShowTitleEnabled(true);
-			supportActionBar.setCustomView(R.layout.activity_main);
+			//supportActionBar.setCustomView(R.layout.activity_main);
 			supportActionBar.setElevation(4);
 		}
 	}
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if (item.getItemId() == android.R.id.home) {
-			//onBackPressed();
-			Intent intent = new Intent(this, MainActivity.class);
+			if (item.getItemId() == android.R.id.home) {
+				if(salesFlg) {
+					Intent intent = new Intent(this, SalesOrderLandActivity.class);
+					this.startActivity(intent);
+					finish();
+					return true;
+				}
+				if(!salesFlg && !deliveryFlg) {
+					Intent intent = new Intent(this, MainActivity.class);
 
-			this.startActivity(intent);
-			return true;
+					this.startActivity(intent);
+					finish();
+					return true;
+				}
+			}
+		if (item.getItemId() == R.id.action_logout) {
+			config.logoutUser(this);
 		}
-		return false;
+		return true;
+	}
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.welcome, menu);
+		return true;
 	}
 }

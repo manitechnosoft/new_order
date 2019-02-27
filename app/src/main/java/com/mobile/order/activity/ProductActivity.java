@@ -24,10 +24,10 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.mobile.order.BaseApplication;
 import com.mobile.order.R;
 import com.mobile.order.adapter.FirestoreProducts;
-import com.mobile.order.config.AppController;
-import com.mobile.order.helper.AppUtil;
+import com.mobile.order.filter.MoneyValueFilter;
 import com.mobile.order.helper.FirestoreUtil;
 import com.mobile.order.model.DaoSession;
 import com.mobile.order.model.Product;
@@ -39,7 +39,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ProductActivity extends AppCompatActivity implements
+public class ProductActivity extends BaseActivity implements
         FirestoreProducts {
     private Query mQuery;
     private ActionBar supportActionBar;
@@ -50,6 +50,8 @@ public class ProductActivity extends AppCompatActivity implements
     @BindView(R.id.cancel_product)
     Button cancel;
 
+    @BindView(R.id.add_product)
+    Button addProduct;
 
     @BindView(R.id.retail_type)
     Spinner retailType;
@@ -65,8 +67,9 @@ public class ProductActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_add_product);
         ButterKnife.bind(this);
         initToolBar();
-        daoSession = ((AppController) getApplication()).getDaoSession();
+        daoSession = ((BaseApplication) getApplication()).getDaoInstance();
         productDao = daoSession.getProductDao();
+        retailPrice.setKeyListener(new MoneyValueFilter());
     }
 
     private void initToolBar(){
@@ -95,6 +98,7 @@ public class ProductActivity extends AppCompatActivity implements
     }
     @OnClick(R.id.add_product)
     public void addProduct(View button) {
+        addProduct.setEnabled(false);
         Product aProduct = prepareProduct();
         validateProduct(aProduct);
 
@@ -107,7 +111,6 @@ public class ProductActivity extends AppCompatActivity implements
     @OnClick(R.id.cancel_product)
     public void cancel(View view) {
         Intent intent = new Intent(this, MainActivity.class);
-
         this.startActivity(intent);
     }
 private Product prepareProduct(){
@@ -140,6 +143,8 @@ private Product prepareProduct(){
                                     public void onSuccess(DocumentReference documentReference) {
                                         Toast.makeText(ProductActivity.this, "Added Newly with reference ID: "+documentReference.getId(),
                                                 Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(ProductActivity.this, MainActivity.class);
+                                        ProductActivity.this.startActivity(intent);
                                         //Insert into local database
                                         FirestoreUtil util=new FirestoreUtil();
                                         util.getProducts(ProductActivity.this,null);
@@ -205,17 +210,24 @@ private Product prepareProduct(){
 
     private boolean validateProduct(final Product aProduct){
         final String TAG = "updatePerson";
+        String validationMessage = "";
         boolean validFlg = true;
         if(TextUtils.isEmpty(aProduct.getProductName()))
         {
             final TextView productErr = findViewById(R.id.productname_error_msg);
+            validationMessage = "Product Name is required";
+            productErr.setText(validationMessage);
             productErr.setVisibility(View.VISIBLE);
             validFlg = false;
         }
         if(TextUtils.isEmpty(aProduct.getProductId()))
         {
-            AppUtil.longToast(this,"Product Id is required.");
+            validationMessage = validationMessage + "\nProduct Name is required";
             validFlg = false;
+        }
+        if(!validFlg){
+            addProduct.setEnabled(true);
+            Toast.makeText(getBaseContext(), validationMessage, Toast.LENGTH_SHORT).show();
         }
         return validFlg;
     }

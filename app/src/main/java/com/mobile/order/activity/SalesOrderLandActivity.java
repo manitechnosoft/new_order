@@ -36,7 +36,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SalesOrderLandActivity extends AppCompatActivity {
+public class SalesOrderLandActivity extends BaseActivity {
     @BindView(R.id.prev_button)
     Button prevButton;
 
@@ -273,15 +273,22 @@ public class SalesOrderLandActivity extends AppCompatActivity {
 
     }
     private void generateOrder(SalesOrder salesOrder){
+        nextButton.setEnabled(false);
+        prevButton.setEnabled(false);
         salesOrder.setSync(true);
         salesOrder.setUpdatedOn(new Date());
         Double total =  calculateTotal(salesOrder.getProductList());
         salesOrder.setTotal(total);
         if(null==salesOrder.getId()){
-            FirestoreUtil.incrementSalesOrderCounterAndCreateOrder(getApplicationContext(), salesOrder);
+            FirestoreUtil.incrementSalesOrderCounterAndCreateOrder(SalesOrderLandActivity.this, salesOrder);
         }
-        AlertDialog alert = prepareDialog();
-        alert.show();
+        //AlertDialog alert = prepareDialog();
+        //alert.show();
+    }
+    public void gotoSuccessActivity(){
+        Intent intent = new Intent(SalesOrderLandActivity.this, SuccessActivity.class);
+        startActivity(intent);
+        finish();
     }
     private Double calculateTotal(List<Product> productList){
         Double total=0D;
