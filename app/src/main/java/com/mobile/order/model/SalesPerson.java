@@ -24,8 +24,8 @@ public SalesPerson(String salesPersonId, String firstName, String lastName){
     this.lastName = lastName;
 }
 @Generated(hash = 64305358)
-public SalesPerson(Long id, String salesPersonDocId, String salesPersonId,
-        String firstName, String lastName, boolean isSync) {
+public SalesPerson(Long id, String salesPersonDocId, String salesPersonId, String firstName, String lastName,
+        boolean isSync) {
     this.id = id;
     this.salesPersonDocId = salesPersonDocId;
     this.salesPersonId = salesPersonId;
@@ -86,7 +86,8 @@ public SalesPerson(Long id, String salesPersonDocId, String salesPersonId,
     public void setSalesPersonDocId(String salesPersonDocId) {
         this.salesPersonDocId = salesPersonDocId;
     }
+
     public String toString(){
-        return (null!=salesPersonId?salesPersonId+ " ":"")+ (null!=firstName?firstName:"") ;
+        return (null!=salesPersonId?salesPersonId+ " ":"")+ (null!=firstName?firstName:"")+ (null!=lastName?lastName:"") ;
     }
 }

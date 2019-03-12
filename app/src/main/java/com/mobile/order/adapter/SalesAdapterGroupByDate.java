@@ -168,7 +168,7 @@ public class SalesAdapterGroupByDate extends RecyclerView.Adapter<SalesAdapterGr
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if(which == 0){
-                    CollectionReference collRef = FirestoreUtil.getSalesCollectionRef();
+                    CollectionReference collRef = FirestoreUtil.getSalesCollectionRefToDisplay(context);
                     collRef.document(docId).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {

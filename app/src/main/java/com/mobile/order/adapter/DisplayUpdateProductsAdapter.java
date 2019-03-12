@@ -1,6 +1,8 @@
 package com.mobile.order.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -10,11 +12,15 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mobile.order.R;
+import com.mobile.order.activity.DisplayAndUpdateProductActivity;
+import com.mobile.order.filter.MoneyValueFilter;
+import com.mobile.order.helper.FirestoreUtil;
 import com.mobile.order.model.Product;
 
 import java.util.List;
@@ -24,12 +30,16 @@ import butterknife.ButterKnife;
 
 public class DisplayUpdateProductsAdapter extends RecyclerView.Adapter<DisplayUpdateProductsAdapter.MyViewHolder> {
     private List<Product> productList;
+    private DisplayAndUpdateProductActivity displayProductActivity;
     private Context ctx;
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     public class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
+        @BindView(R.id.product_doc_id)
+        public TextView productDocId;
+
         @BindView(R.id.product_name)
         public EditText productName;
 
@@ -45,17 +55,56 @@ public class DisplayUpdateProductsAdapter extends RecyclerView.Adapter<DisplayUp
         @BindView(R.id.product_name_error)
         public TextView productNameErr;
 
+        @BindView(R.id.delete)
+        public ImageView imgDelete;
+
         ArrayAdapter retailTypeAdapter;
         MyViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             retailTypeAdapter = (ArrayAdapter) retailType.getAdapter();
+            imgDelete.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    //v.getId() will give you the image id
+                    if(displayProductActivity.isEditFlag()){
+                        deleteSalesPerson(productId.getText().toString(), productDocId.getText().toString());
+
+                    }
+                    else{
+                        Toast msg = Toast.makeText(ctx,
+                                "Please wait! Existing process in progress!",
+                                Toast.LENGTH_LONG);
+                        msg.show();
+                    }
+                }
+            });
         }
     }
+    private void deleteSalesPerson(final String productId, final String productDocRefId){
+        // Pass grocery id to the next screen
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(displayProductActivity);
+        String[] options ;
+        options = new String[2];
+        alertDialogBuilder.setTitle("Do you want to delete "+ productId + " record?");
+        options[0] = "Yes ";
+        options[1] = "Cancel";
+        alertDialogBuilder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(which == 0){
+                    FirestoreUtil.deleteProductInFirebase(displayProductActivity,productDocRefId);
+                    displayProductActivity.setEditFlag(false);
+                }
+            }
+        });
+        alertDialogBuilder.create().show();
 
+        // fetchSalesList();
+    }
     // Provide a suitable constructor (depends on the kind of dataset)
-    public DisplayUpdateProductsAdapter(List<Product> products) {
+    public DisplayUpdateProductsAdapter(DisplayAndUpdateProductActivity paramDisplayProductActivity, List<Product> products) {
         this.productList = products;
+        this.displayProductActivity = paramDisplayProductActivity;
     }
 
     // Create new views (invoked by the layout manager)
@@ -71,6 +120,7 @@ public class DisplayUpdateProductsAdapter extends RecyclerView.Adapter<DisplayUp
     public void onBindViewHolder(final MyViewHolder holder,final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
+        holder.productDocId.setText(productList.get(position).getProductDocId());
         holder.productName.setText(productList.get(position).getProductName());
         holder.productId.setText(productList.get(position).getProductId());
         holder.retailPrice.setText(productList.get(position).getRetailSalePrice()!=null?productList.get(position).getRetailSalePrice().toString():"");
@@ -79,6 +129,7 @@ public class DisplayUpdateProductsAdapter extends RecyclerView.Adapter<DisplayUp
 
         holder.productName.addTextChangedListener( new TextChangeListener("PRODUCT_NAME", position));
         holder.retailPrice.addTextChangedListener( new TextChangeListener("RETAIL_PRICE", position));
+        holder.retailPrice.setKeyListener(new MoneyValueFilter());
         holder.retailType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int selectedItemPosition, long id) {

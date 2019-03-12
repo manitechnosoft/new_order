@@ -83,4 +83,9 @@
 
     <string name="turn_on">Turn On and Off Flashlight Programmatically</string>
     <string name="logout">Logout</string>
+    <string name="refresh">Refresh</string>
+
+
+
+    <string name="updateproduct_pref" translatable="false">com.mobile.order.DisplayAndUpdateProductActivity</string>
 </resources>

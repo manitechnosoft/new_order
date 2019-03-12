@@ -47,6 +47,8 @@ public class DisplayAndUpdateProductActivity  extends BaseActivity implements Fi
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
+    boolean editFlag = true;
+
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private List<Product> rvProductList=new ArrayList<>();
@@ -67,7 +69,7 @@ public class DisplayAndUpdateProductActivity  extends BaseActivity implements Fi
         productDao = daoSession.getProductDao();
 
         FirestoreUtil util=new FirestoreUtil();
-        util.getProducts(DisplayAndUpdateProductActivity.this, null);
+        util.getProducts(DisplayAndUpdateProductActivity.this, null, true);
         initializeToolbar();
     }
     public void loadProducts(List<Product> dbProductList){
@@ -76,7 +78,7 @@ public class DisplayAndUpdateProductActivity  extends BaseActivity implements Fi
         // com.google.firebase.quickstart.auth.greendao.DividerItemDecoration dividerItemDecoration =new com.google.firebase.quickstart.auth.greendao.DividerItemDecoration(ContextCompat.getDrawable(getApplicationContext(), R.drawable.item_decorator));
         // productList.addItemDecoration(dividerItemDecoration);
 
-        mAdapter = new DisplayUpdateProductsAdapter(rvProductList);
+        mAdapter = new DisplayUpdateProductsAdapter(this, rvProductList);
         productList.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         productList.setLayoutManager(mLayoutManager);
@@ -98,7 +100,9 @@ public class DisplayAndUpdateProductActivity  extends BaseActivity implements Fi
             }
         }
         updateProducts.setEnabled(false);
-
+        AppUtil.putInProductPref(this, 0);
+        AppUtil.putInProductPref(DisplayAndUpdateProductActivity.this, 0);
+        final int totalRow = null!=rvProductList?rvProductList.size():0;
         for(final Product aProduct:rvProductList){
             final DocumentReference productDocRef = FirestoreUtil.getProductCollectionRef().document(aProduct.getProductDocId());
             productDocRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -113,8 +117,19 @@ public class DisplayAndUpdateProductActivity  extends BaseActivity implements Fi
                     productDocRef.set(dbProduct).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Log.d(TAG, "Product "+ dbProduct.getProductName() +"has been updated Successfully!");
-
+                            Log.d(TAG, "Product "+ dbProduct.getProductName() +" has been updated Successfully!");
+                            int count = AppUtil.getFromProductPref(DisplayAndUpdateProductActivity.this);
+                            count++;
+                            AppUtil.putInProductPref(DisplayAndUpdateProductActivity.this, count);
+                            if(count == totalRow){
+                                AppUtil.putInProductPref(DisplayAndUpdateProductActivity.this, 0);
+                                updateProducts.setEnabled(true);
+                                FirestoreUtil util=new FirestoreUtil();
+                                util.getProducts(DisplayAndUpdateProductActivity.this, null, false);
+                                Toast.makeText(getApplicationContext(),
+                                        "All Products are updated!",
+                                        Toast.LENGTH_LONG).show();
+                            }
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -166,5 +181,13 @@ public class DisplayAndUpdateProductActivity  extends BaseActivity implements Fi
             return true;
         }
         return false;
+    }
+
+    public boolean isEditFlag() {
+        return editFlag;
+    }
+
+    public void setEditFlag(boolean editFlag) {
+        this.editFlag = editFlag;
     }
 }

@@ -1,6 +1,8 @@
 package com.mobile.order.helper;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -12,25 +14,36 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
+import com.mobile.order.BaseApplication;
+import com.mobile.order.activity.DisplayAndUpdateProductActivity;
+import com.mobile.order.activity.DisplayAndUpdateSalesPersonActivity;
+import com.mobile.order.activity.MainActivity;
+import com.mobile.order.activity.ProductActivity;
 import com.mobile.order.activity.SalesOrderActivity;
 import com.mobile.order.activity.SalesOrderDisplayActivity;
 import com.mobile.order.activity.SalesOrderLandActivity;
+import com.mobile.order.activity.SalesOrderSimpleDisplayActivity;
 import com.mobile.order.activity.SuccessActivity;
 import com.mobile.order.adapter.FirestoreProducts;
 import com.mobile.order.adapter.FirestoreSales;
 import com.mobile.order.adapter.FirestoreSalesFilter;
 import com.mobile.order.adapter.FirestoreSalesPersons;
+import com.mobile.order.model.DaoSession;
 import com.mobile.order.model.Product;
+import com.mobile.order.model.ProductDao;
 import com.mobile.order.model.SalesFilter;
 import com.mobile.order.model.SalesOrder;
 import com.mobile.order.model.SalesPerson;
+import com.mobile.order.model.SalesPersonDao;
 
 
 import java.text.SimpleDateFormat;
@@ -62,11 +75,168 @@ public class FirestoreUtil {
     public static CollectionReference getProductCollectionRef(){
         return getFirestoreDB().collection("products");
     }
+    public static void updateProductInFirebase(final Activity addProduct, Product aProduct){
+        FirestoreUtil.getProductCollectionRef()
+                .add(aProduct)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Toast.makeText(addProduct, "Added Newly with reference ID: "+documentReference.getId(),
+                                Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(addProduct, MainActivity.class);
+                        addProduct.startActivity(intent);
+                        //Insert into local database
+                        FirestoreUtil util=new FirestoreUtil();
+                        util.getProducts(addProduct,null, true);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(addProduct, "Error adding document "+e.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+    public static void deleteSalesPersonInFirebase(final DisplayAndUpdateSalesPersonActivity activity, final String salesPersonDocId){
+        FirestoreUtil.getSalesPersonCollectionRef().document(salesPersonDocId)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(activity, "Deleted Successfully!",
+                                Toast.LENGTH_SHORT).show();
+                        activity.setEditFlag(true);
+                        FirestoreUtil util=new FirestoreUtil();
+                        util.getSalesPersonList(activity, null);
+                       /*  notifyDataSetChanged();
+                        Activity activity = (Activity) context;
+                        activity.recreate();*/
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(activity, salesPersonDocId+ " Delete failure!",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+    public static void deleteProductInFirebase(final DisplayAndUpdateProductActivity activity,final String productDocId){
+        FirestoreUtil.getProductCollectionRef().document(productDocId)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                       Toast.makeText(activity, "Deleted Successfully!",
+                                Toast.LENGTH_SHORT).show();
+                        activity.setEditFlag(true);
+                        FirestoreUtil util=new FirestoreUtil();
+                        util.getProducts(activity, null, true);
+                       /*  notifyDataSetChanged();
+                        Activity activity = (Activity) context;
+                        activity.recreate();*/
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(activity, productDocId+ " Delete failure!",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
     public static CollectionReference getSalesPersonCollectionRef(){
-        return getFirestoreDB().collection("salesperson");
+        CollectionReference salesPersonRef = getFirestoreDB().collection("salesperson");
+        salesPersonRef.addSnapshotListener(getSalesPersonCollectionListener());
+        return salesPersonRef;
+    }
+    public static CollectionReference getSalesCollectionRefToDisplay(Context ctx){
+        CollectionReference salesRef = getFirestoreDB().collection("sales");
+
+        //salesRef.addSnapshotListener(getSalesCollectionListener());
+
+        return salesRef;
     }
     public static CollectionReference getSalesCollectionRef(){
-        return getFirestoreDB().collection("sales");
+        CollectionReference salesRef = getFirestoreDB().collection("sales");
+        return salesRef;
+    }
+    private static EventListener<QuerySnapshot> getSalesCollectionListener(){
+        return new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                //If something went wrong
+                if (e != null)
+
+                    if (queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty()) {
+                        //Instead of simply using the entire query snapshot
+                        //See the actual changes to query results between query snapshots (added, removed, and modified)
+                        for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
+                            switch (doc.getType()) {
+                                case ADDED:{
+                                    refreshSalesOrdersList();
+                                    break;
+                                }
+                                case MODIFIED:
+                                {
+                                    refreshSalesOrdersList();
+                                    break;
+                                }
+                                case REMOVED:
+                                {
+                                    refreshSalesOrdersList();
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+            }
+        };
+    }
+    private static void refreshSalesOrdersList(){
+        Activity currentActivity = AppUtil.getRunningActivity();
+        if(currentActivity instanceof SalesOrderSimpleDisplayActivity){
+            SalesOrderSimpleDisplayActivity salesOrderDisplay = (SalesOrderSimpleDisplayActivity)currentActivity;
+            salesOrderDisplay.fetchSalesList();
+        }
+    }
+    private static EventListener<QuerySnapshot> getSalesPersonCollectionListener(){
+        return new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                //If something went wrong
+                if (e != null)
+                    if (queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty()) {
+                        //Instead of simply using the entire query snapshot
+                        //See the actual changes to query results between query snapshots (added, removed, and modified)
+                        for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
+                            switch (doc.getType()) {
+                                case ADDED:{
+                                    refreshSalesPersonDBList();
+                                    break;
+                                }
+                                case MODIFIED:
+                                {
+                                    refreshSalesPersonDBList();
+                                    break;
+                                }
+                                case REMOVED:
+                                {
+                                    refreshSalesPersonDBList();
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+            }
+        };
+    }
+    private static void refreshSalesPersonDBList(){
+        FirestoreUtil util=new FirestoreUtil();
+        util.getSalesPersonList(null,null);
     }
     public static CollectionReference getPurchaseCollectionRef(){
         return getFirestoreDB().collection("purchase");
@@ -74,7 +244,7 @@ public class FirestoreUtil {
     public static CollectionReference getLocationCollectionRef(){
         return getFirestoreDB().collection("locations");
     }
-    public void getProducts(final Context ctx, final Fragment currentFragment){
+    public void getProducts(final Context ctx, final Fragment currentFragment,final boolean loadProductsFlg){
         final List<Product> productList=new ArrayList<Product>();
 
         Query query = FirestoreUtil.getProductCollectionRef();
@@ -95,13 +265,21 @@ public class FirestoreUtil {
 
                             Log.i(TAG,"Retrieved product "+aProduct.getProductName());
                         }
+                        DaoSession daoSession = ((BaseApplication)ctx.getApplicationContext()).getDaoInstance();
+                        ProductDao productDao = daoSession.getProductDao();
+                        productDao.deleteAll();
+                        for(Product aProduct:productList){
+                            aProduct.setId(null);
+                            productDao.insert(aProduct);
+                        }
                         FirestoreProducts firestoreInterface = null;
                         if(null!=currentFragment){
                             firestoreInterface = (FirestoreProducts)currentFragment;
                         }
-                        else{
+                        else if(null!=ctx){
                             firestoreInterface = (FirestoreProducts)ctx;
                         }
+                        if(null!= firestoreInterface && loadProductsFlg)
                         firestoreInterface.loadProducts(productList);
                     }
                 }
@@ -131,14 +309,23 @@ public class FirestoreUtil {
                             aPerson.setSalesPersonDocId(document.getId());
                             personList.add(aPerson);
                         }
+                        DaoSession daoSession = ((BaseApplication)ctx.getApplicationContext()).getDaoInstance();
+                        SalesPersonDao salesPersonDao = daoSession.getSalesPersonDao();
+                        salesPersonDao.deleteAll();
+                        for(SalesPerson aProduct:personList){
+                            aProduct.setId(null);
+                            salesPersonDao.insert(aProduct);
+                        }
                         FirestoreSalesPersons firestoreInterface = null;
+
                         if(null==currentFragment){
                             firestoreInterface = (FirestoreSalesPersons)ctx;
                         }
-                        else{
+                        else if(null!=currentFragment) {
                             firestoreInterface = (FirestoreSalesPersons)currentFragment;
                         }
-                        firestoreInterface.loadSalesPersons(personList);
+                        if(null!=firestoreInterface)
+                            firestoreInterface.loadSalesPersons(personList);
                     }
                 }
                 else {
@@ -267,4 +454,6 @@ public class FirestoreUtil {
                     }
                 });
     }
+
+
 }

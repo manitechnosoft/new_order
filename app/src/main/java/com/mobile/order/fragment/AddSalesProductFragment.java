@@ -4,15 +4,20 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -22,6 +27,7 @@ import android.widget.Toast;
 import com.mobile.order.BaseApplication;
 import com.mobile.order.R;
 import com.mobile.order.adapter.FirestoreProducts;
+import com.mobile.order.adapter.ProductListAdapter;
 import com.mobile.order.adapter.SalesOrderAdapter;
 import com.mobile.order.filter.MoneyValueFilter;
 import com.mobile.order.helper.AppUtil;
@@ -44,10 +50,10 @@ public class AddSalesProductFragment extends Fragment implements FirestoreProduc
   List<Product> productsList;
   ArrayAdapter<String> itemsAdapter;
   private View mViewHolder;
-  @BindView(R.id.enter_product)
-  EditText enterProduct;
+ /* @BindView(R.id.enter_product)
+  EditText enterProduct;*/
   @BindView(R.id.mrp)
-  TextView mrp;
+  EditText mrp;
 
   @BindView(R.id.quantity)
   EditText quantity;
@@ -61,9 +67,11 @@ public class AddSalesProductFragment extends Fragment implements FirestoreProduc
     @BindView(R.id.add_sales_product)
     Button addProduct;
 
+  @BindView(R.id.product_autoComplete)
+  AutoCompleteTextView productAutoComplete;
+
   Button nextButton;
   List<Product> productsDetailList =new ArrayList<>();
-
   private RecyclerView.Adapter salesDetailArrayAdapter;
   private RecyclerView.LayoutManager mLayoutManager;
   @BindView(R.id.list_details)
@@ -90,12 +98,12 @@ public class AddSalesProductFragment extends Fragment implements FirestoreProduc
       productsList = productDao.loadAll();
       if(productsList.size()==0){
         FirestoreUtil util=new FirestoreUtil();
-        util.getProducts(getContext(),AddSalesProductFragment.this);
+        util.getProducts(getContext(),AddSalesProductFragment.this, true);
       }
       Activity currentActivity = getActivity();
       nextButton = currentActivity.findViewById(R.id.next_button);
       nextButton.setText("Next  ");
-
+      initializeCustomerAutoComplete();
 //quantity.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(7, 2)});
     }
     return mViewHolder;
@@ -106,9 +114,9 @@ public class AddSalesProductFragment extends Fragment implements FirestoreProduc
     productsList = productDao.loadAll();
     if(productsList.size()==0){
       FirestoreUtil util=new FirestoreUtil();
-      util.getProducts(getContext(),AddSalesProductFragment.this);
+      util.getProducts(getContext(),AddSalesProductFragment.this, true);
     }
-    enterProduct.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+    /*enterProduct.setOnFocusChangeListener(new View.OnFocusChangeListener() {
       @Override
       public void onFocusChange(View v, boolean hasFocus) {
         if (!hasFocus) {
@@ -120,7 +128,7 @@ public class AddSalesProductFragment extends Fragment implements FirestoreProduc
                   Toast.LENGTH_SHORT).show();
         }
       }
-    });
+    });*/
 
     addProduct.setOnClickListener(new View.OnClickListener() {
           @Override
@@ -130,7 +138,23 @@ public class AddSalesProductFragment extends Fragment implements FirestoreProduc
       });
     //quantity.addTextChangedListener(new DecimalFilter(quantity, getActivity(),8,2));
     quantity.setKeyListener(new MoneyValueFilter());
-
+    mrp.setKeyListener(new MoneyValueFilter());
+    quantity.addTextChangedListener(new TextWatcher() {
+      public void onTextChanged(CharSequence s, int start, int before, int count) {
+        String strUserQuantity = s.toString();
+        if(!strUserQuantity.isEmpty() && !mrp.getText().toString().isEmpty()){
+          Double lQuantity = Double.valueOf(strUserQuantity);
+          Double salesPrice = Double.valueOf(mrp.getText().toString());
+          Double total =  salesPrice * lQuantity;
+          Double roundedPrice = AppUtil.round(total,3);
+          price.setText(roundedPrice.toString());
+        }
+      }
+      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+      }
+      public void afterTextChanged(Editable s) {
+      }
+    } );
     salesDetailArrayAdapter = new SalesOrderAdapter(productsDetailList, true);
     //productsDetailList.setHasFixedSize(true);
     mLayoutManager = new LinearLayoutManager(getContext());
@@ -206,7 +230,7 @@ private Product getProduct(String productCode){
     if(validateSalesDetails()) {
       Float userQuantity = new Float(quantity.getText().toString());
       Product product1 = new Product();
-      Product storedProduct =  getProduct(enterProduct.getText().toString());
+      Product storedProduct =  getProduct(productAutoComplete.getText().toString());
       if(null!=storedProduct){
         product1.setProductDocId(storedProduct.getProductDocId());
         product1.setProductName(storedProduct.getProductName());
@@ -290,7 +314,8 @@ private Product getProduct(String productCode){
   private void clearFields(){
    // products.setSelection(0);
     quantity.setText("");
-    enterProduct.setText("");
+    //enterProduct.setText("");
+    productAutoComplete.setText("");
     productType.setSelection(0);
     price.setText("");
     mrp.setText("");
@@ -303,11 +328,23 @@ private Product getProduct(String productCode){
       flg=false;
       toastMsg = toastMsg+ "\nQuantity can not be empty!";
     }
-    if(enterProduct.getText().toString().isEmpty()){
+   /* if(enterProduct.getText().toString().isEmpty()){
       flg=false;
       toastMsg = toastMsg+ "\nProduct code can not be empty!";
     }
     if(!enterProduct.getText().toString().isEmpty() && enterProduct.getText().toString().length()==6){
+      flg=false;
+      toastMsg = toastMsg+ "\nEntered wrong product code!";
+    }*/
+    if(mrp.getText().toString().isEmpty()){
+      flg=false;
+      toastMsg = toastMsg+ "\nMRP can not be empty!";
+    }
+    if(productAutoComplete.getText().toString().isEmpty()){
+      flg=false;
+      toastMsg = toastMsg+ "\nProduct code can not be empty!";
+    }
+    if(!productAutoComplete.getText().toString().isEmpty() && productAutoComplete.getText().toString().length()!=6){
       flg=false;
       toastMsg = toastMsg+ "\nEntered wrong product code!";
     }
@@ -320,5 +357,25 @@ private Product getProduct(String productCode){
   }
   public List<Product> getProductsDetailList(){
     return productsDetailList;
+  }
+  private void initializeCustomerAutoComplete(){
+    productAutoComplete.setThreshold(2);//will start working from first character
+    ProductListAdapter contactsListAdapter =new ProductListAdapter(getContext(),productsList,new ProductListAdapter.OnItemClickListener() {
+      @Override
+      public void onItemClick(Product aContact) {
+        Toast.makeText(getContext(), aContact.getProductId()+" Clicked", Toast.LENGTH_LONG).show();
+      }
+    });
+    productAutoComplete.setAdapter(contactsListAdapter);//setting the adapter data into the AutoCompleteTextView
+    productAutoComplete.setTextColor(Color.RED);
+
+    productAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+      @Override
+      public void onItemClick (AdapterView<?> parent, View view, int position, long id) {
+        Toast.makeText(getContext(), productsList.get(position).getProductId()+" Clicked", Toast.LENGTH_LONG).show();
+        productAutoComplete.setText(productsList.get(position).getProductId());
+        mrp.setText(productsList.get(position).getRetailSalePrice().toString());
+      }
+    });
   }
 }

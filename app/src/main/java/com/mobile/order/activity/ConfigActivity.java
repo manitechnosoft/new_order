@@ -1,5 +1,6 @@
 package com.mobile.order.activity;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -7,6 +8,7 @@ import com.mobile.order.BaseApplication;
 import com.mobile.order.R;
 import com.mobile.order.adapter.FirestoreProducts;
 import com.mobile.order.adapter.FirestoreSalesPersons;
+import com.mobile.order.helper.AppUtil;
 import com.mobile.order.helper.FirestoreUtil;
 import com.mobile.order.model.DaoSession;
 import com.mobile.order.model.Product;
@@ -51,7 +53,7 @@ public class ConfigActivity  extends BaseActivity implements
     @OnClick(R.id.sync_product)
     public void syncProducts() {
         FirestoreUtil util=new FirestoreUtil();
-        util.getProducts(this,null);
+        util.getProducts(this,null, true);
 
     }
     @OnClick(R.id.sync_sales_persons)

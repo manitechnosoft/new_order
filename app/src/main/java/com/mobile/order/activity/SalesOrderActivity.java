@@ -222,7 +222,7 @@ Button confirmSalesOrder;
 	public void loadProductsSpinner(List<Product> productList){
 		if(productList.size()==0){
 			FirestoreUtil util=new FirestoreUtil();
-			util.getProducts(this,null);
+			util.getProducts(this,null, true);
 		}
 		else{
 			initProductsSpinner(productList);

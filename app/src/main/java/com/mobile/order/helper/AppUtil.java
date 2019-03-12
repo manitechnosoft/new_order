@@ -1,17 +1,21 @@
 package com.mobile.order.helper;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.util.ArrayMap;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -27,6 +31,7 @@ import com.mobile.order.model.SalesPerson;
 
 import org.greenrobot.greendao.annotation.NotNull;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.ParseException;
@@ -276,5 +281,45 @@ public class AppUtil {
         if (imm != null) {
             imm.hideSoftInputFromWindow(textInput.getWindowToken(), 0);
         }
+    }
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    public static Activity getRunningActivity() {
+        try {
+            Class activityThreadClass = Class.forName("android.app.ActivityThread");
+            Object activityThread = activityThreadClass.getMethod("currentActivityThread")
+                    .invoke(null);
+            Field activitiesField = activityThreadClass.getDeclaredField("mActivities");
+            activitiesField.setAccessible(true);
+            ArrayMap activities = (ArrayMap) activitiesField.get(activityThread);
+            for (Object activityRecord : activities.values()) {
+                Class activityRecordClass = activityRecord.getClass();
+                Field pausedField = activityRecordClass.getDeclaredField("paused");
+                pausedField.setAccessible(true);
+                if (!pausedField.getBoolean(activityRecord)) {
+                    Field activityField = activityRecordClass.getDeclaredField("activity");
+                    activityField.setAccessible(true);
+                    return (Activity) activityField.get(activityRecord);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        throw new RuntimeException("Didn't find the running activity");
+    }
+
+    private static SharedPreferences getAppSharedPref(Context ctx){
+       return ctx.getSharedPreferences(
+                ctx.getString(R.string.updateproduct_pref), Context.MODE_PRIVATE);
+    }
+    public static Integer getFromProductPref(Context ctx){
+        SharedPreferences sharedPref = getAppSharedPref(ctx);
+        return sharedPref.getInt(ctx.getString(R.string.updateproduct_pref),0);
+    }
+    public static void putInProductPref(Context ctx, int counter){
+        SharedPreferences sharedPref = getAppSharedPref(ctx);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(ctx.getString(R.string.updateproduct_pref), counter);
+        editor.commit();
     }
 }

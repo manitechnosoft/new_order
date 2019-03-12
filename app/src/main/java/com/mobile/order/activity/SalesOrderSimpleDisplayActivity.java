@@ -124,7 +124,7 @@ public class SalesOrderSimpleDisplayActivity extends BaseActivity implements Fir
 		salesAdapterGroupByDate.notifyDataSetChanged();
 	}
 
-	private void fetchSalesList(){
+	public void fetchSalesList(){
 		salesNewList.clear();
 		//// Load all items
 		//salesNewList.addAll(salesDao.loadAll());
@@ -267,8 +267,9 @@ public class SalesOrderSimpleDisplayActivity extends BaseActivity implements Fir
 					FontHelper.getFont(Fonts.MULI_SEMI_BOLD))
 			);
 			supportActionBar.setDisplayShowTitleEnabled(true);
-			//supportActionBar.setCustomView(R.layout.activity_main);
-			supportActionBar.setElevation(4);
+			supportActionBar.setDisplayShowCustomEnabled(true);
+			//supportActionBar.setCustomView(R.layout.custom_action_bar_layout);
+			//supportActionBar.setElevation(4);
 		}
 	}
 	@Override
@@ -290,6 +291,9 @@ public class SalesOrderSimpleDisplayActivity extends BaseActivity implements Fir
 			}
 		if (item.getItemId() == R.id.action_logout) {
 			config.logoutUser(this);
+		}
+		if (item.getItemId() == R.id.refresh) {
+			fetchSalesList();
 		}
 		return true;
 	}

@@ -17,11 +17,13 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mobile.order.BaseApplication;
 import com.mobile.order.R;
@@ -31,6 +33,7 @@ import com.mobile.order.helper.AppUtil;
 import com.mobile.order.helper.FirestoreUtil;
 import com.mobile.order.helper.FontHelper;
 import com.mobile.order.helper.Fonts;
+import com.mobile.order.model.Config;
 import com.mobile.order.model.DaoSession;
 import com.mobile.order.model.SalesFilter;
 import com.mobile.order.model.SalesOrder;
@@ -48,7 +51,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class SalesOrderDisplayActivity extends BaseActivity implements FirestoreSales {
-
+	private Config config;
 	@BindView(R.id.toolbar)
 	Toolbar toolbar;
 
@@ -116,6 +119,7 @@ public class SalesOrderDisplayActivity extends BaseActivity implements Firestore
 		}
 		setupListView();
 		initializeToolbar();
+		config = ((BaseApplication) getApplication()).getConfig();
 	}
 
 	@Override
@@ -233,10 +237,10 @@ private SalesPerson getSalesPersonById(String salesPersonId){
 		mFilterDialog.show(getSupportFragmentManager(), FilterSalesDialogFragment.TAG);
 		//mFilterDialog.addToBackStack(FilterSalesDialogFragment.TAG);
 	}
-	@OnClick(R.id.button_clear_filter)
+	@OnClick({R.id.button_clear_filter})
 	public void onClearFilterClicked() {
 		mFilterDialog.resetFilters();
-
+		Toast.makeText(getApplicationContext(),"clicked from bar", Toast.LENGTH_SHORT).show();
 		//onFilter(Filters.getDefault());
 	}
 	public class DividerItemDecoration extends RecyclerView.ItemDecoration {
@@ -312,11 +316,13 @@ private SalesPerson getSalesPersonById(String salesPersonId){
 				supportActionBar.setDisplayShowHomeEnabled(true);
 				supportActionBar.setHomeAsUpIndicator(getResources().getDrawable(R.drawable.back_arrow_dark));
 				supportActionBar.setDisplayShowTitleEnabled(true);
-				supportActionBar.setCustomView(R.layout.activity_main);
+				//supportActionBar.setCustomView(R.layout.activity_main);
 				supportActionBar.setElevation(4);
 
 			//}
 		}
+
+
 	}
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -329,6 +335,18 @@ private SalesPerson getSalesPersonById(String salesPersonId){
 			}
 			return true;
 		}
+		if (item.getItemId() == R.id.action_logout) {
+			config.logoutUser(this);
+		}
+		if (item.getItemId() == R.id.refresh) {
+			fetchSalesList();
+		}
 		return false;
+	}
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.welcome, menu);
+		return true;
 	}
 }

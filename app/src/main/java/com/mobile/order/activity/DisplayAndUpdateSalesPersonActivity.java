@@ -41,10 +41,12 @@ public class DisplayAndUpdateSalesPersonActivity extends BaseActivity implements
     RecyclerView productList;
 
     @BindView(R.id.btn_confirm)
-    Button updateProducts;
+    Button updateSalesPerson;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
+    boolean editFlag = true;
 
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -70,7 +72,7 @@ public class DisplayAndUpdateSalesPersonActivity extends BaseActivity implements
     public void loadSalesPersons(List<SalesPerson> aList){
         salesPersonList = aList;
 
-        mAdapter = new DisplayUpdateSalesPersonAdapter(salesPersonList);
+        mAdapter = new DisplayUpdateSalesPersonAdapter(this, salesPersonList);
         productList.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         productList.setLayoutManager(mLayoutManager);
@@ -91,7 +93,9 @@ public class DisplayAndUpdateSalesPersonActivity extends BaseActivity implements
                 break;
             }
         }
-        updateProducts.setEnabled(false);
+        updateSalesPerson.setEnabled(false);
+        final int totalRow = null!=salesPersonList?salesPersonList.size():0;
+        AppUtil.putInProductPref(DisplayAndUpdateSalesPersonActivity.this, 0);
         for(final SalesPerson person: salesPersonList){
             final DocumentReference productDocRef = FirestoreUtil.getSalesPersonCollectionRef().document(person.getSalesPersonDocId());
             productDocRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -105,7 +109,15 @@ public class DisplayAndUpdateSalesPersonActivity extends BaseActivity implements
                         @Override
                         public void onSuccess(Void aVoid) {
                             Log.d(TAG, "Sales Person Record "+ dbProduct.getSalesPersonId() +" has been updated Successfully!");
-
+                            int count = AppUtil.getFromProductPref(DisplayAndUpdateSalesPersonActivity.this);
+                            count++;
+                            AppUtil.putInProductPref(DisplayAndUpdateSalesPersonActivity.this, count);
+                            if(count == totalRow){
+                                AppUtil.putInProductPref(DisplayAndUpdateSalesPersonActivity.this, 0);
+                                Toast.makeText(getApplicationContext(),
+                                        "All Sales Persons information has been updated!",
+                                        Toast.LENGTH_LONG).show();
+                            }
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -156,5 +168,13 @@ public class DisplayAndUpdateSalesPersonActivity extends BaseActivity implements
             aProduct.setId(null);
             salesPersonDao.insert(aProduct);
         }
+    }
+
+    public boolean isEditFlag() {
+        return editFlag;
+    }
+
+    public void setEditFlag(boolean editFlag) {
+        this.editFlag = editFlag;
     }
 }

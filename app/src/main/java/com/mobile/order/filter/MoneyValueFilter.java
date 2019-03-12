@@ -3,6 +3,7 @@ package com.mobile.order.filter;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.method.DigitsKeyListener;
+import android.widget.EditText;
 
 public class MoneyValueFilter extends DigitsKeyListener {
     public MoneyValueFilter() {

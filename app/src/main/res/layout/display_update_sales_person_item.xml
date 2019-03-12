@@ -32,6 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <EditText
 
                     android:id="@+id/sales_person_id"
@@ -64,10 +65,21 @@
                     android:maxLength="30"
                     android:textSize="@dimen/title_text"
                     android:inputType="textNoSuggestions"/>
+                <ImageView
+                    android:id="@+id/delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end|center_vertical"
+                    android:foregroundGravity="right"
+                    android:src="@drawable/close"/>
             </LinearLayout>
-
-
-
+                <EditText
+                    android:id="@+id/sales_person_doc_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:textSize="@dimen/title_text"/>
                 <TextView
 
                     android:id="@+id/sales_person_id_error"

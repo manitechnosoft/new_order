@@ -58,6 +58,11 @@ public class ProductActivity extends BaseActivity implements
 
     @BindView(R.id.retail_price)
     EditText retailPrice;
+    @BindView(R.id.product_name)
+    EditText productField;
+    @BindView(R.id.product_id)
+    EditText productId;
+
     DaoSession daoSession;
     ProductDao productDao;
     /** Called when the activity is first created. */
@@ -114,9 +119,7 @@ public class ProductActivity extends BaseActivity implements
         this.startActivity(intent);
     }
 private Product prepareProduct(){
-    final EditText productField = findViewById(R.id.product_name);
     String product = productField.getText().toString();
-    final EditText productId = findViewById(R.id.product_id);
     Product aProduct = new Product();
     aProduct.setProductId(productId.getText().toString());
     aProduct.setProductName(product);
@@ -129,43 +132,26 @@ private Product prepareProduct(){
         final String TAG = "updatePerson";
         if(validateProduct(aProduct)){
         Query query = FirestoreUtil.getProductCollectionRef();
-        query = query.whereEqualTo("productId", aProduct.getProductName());
+        query = query.whereEqualTo("productId", aProduct.getProductId());
 
          query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task){
                 if (task.isSuccessful()) {
                     if(task.getResult().size()==0){
-                        FirestoreUtil.getProductCollectionRef()
-                                .add(aProduct)
-                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                    @Override
-                                    public void onSuccess(DocumentReference documentReference) {
-                                        Toast.makeText(ProductActivity.this, "Added Newly with reference ID: "+documentReference.getId(),
-                                                Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(ProductActivity.this, MainActivity.class);
-                                        ProductActivity.this.startActivity(intent);
-                                        //Insert into local database
-                                        FirestoreUtil util=new FirestoreUtil();
-                                        util.getProducts(ProductActivity.this,null);
-                                        Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.w(TAG, "Error adding document", e);
-                                    }
-                                });
+                        FirestoreUtil.updateProductInFirebase(ProductActivity.this, aProduct);
                     }
                     else{
-                        Toast.makeText(ProductActivity.this, "Product Existed!",
+                        Toast.makeText(ProductActivity.this, "Product Existed with the given product Id "+ aProduct.getProductId()+ "!",
                                 Toast.LENGTH_SHORT).show();
-                        for (DocumentSnapshot document : task.getResult()) {
+                        addProduct.setEnabled(true);
+                        productId.requestFocusFromTouch();
+                        productId.requestFocus();
+                        /*for (DocumentSnapshot document : task.getResult()) {
                             Toast.makeText(ProductActivity.this, "Reference ID: "+document.getId(),
                                     Toast.LENGTH_SHORT).show();
                             Log.d(TAG, document.getId() + " => " + document.getData());
-                        }
+                        }*/
                     }
 
                 }

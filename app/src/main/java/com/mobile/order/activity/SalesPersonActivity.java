@@ -146,13 +146,14 @@ private SalesPerson prepareSalesPerson(){
                                 });
                     }
                     else{
-                        Toast.makeText(SalesPersonActivity.this, "Sales Person Existed!",
+                        Toast.makeText(SalesPersonActivity.this, "Sales person existed already with the given id "+ salesPerson.getSalesPersonId() + "!",
                                 Toast.LENGTH_SHORT).show();
-                        for (DocumentSnapshot document : task.getResult()) {
+                        addSalesPerson.setEnabled(true);
+                        /*for (DocumentSnapshot document : task.getResult()) {
                             Toast.makeText(SalesPersonActivity.this, "Reference ID: "+document.getId(),
                                     Toast.LENGTH_SHORT).show();
                             Log.d(TAG, document.getId() + " => " + document.getData());
-                        }
+                        }*/
                     }
 
                 }
