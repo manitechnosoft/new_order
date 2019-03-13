@@ -244,7 +244,7 @@ public class FirestoreUtil {
     public static CollectionReference getLocationCollectionRef(){
         return getFirestoreDB().collection("locations");
     }
-    public void getProducts(final Context ctx, final Fragment currentFragment,final boolean loadProductsFlg){
+    public void getProducts(final Context ctx, final FirestoreProducts currentFragment,final boolean loadProductsFlg){
         final List<Product> productList=new ArrayList<Product>();
 
         Query query = FirestoreUtil.getProductCollectionRef();

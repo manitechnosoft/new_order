@@ -22,6 +22,7 @@ import com.mobile.order.BaseApplication;
 import com.mobile.order.R;
 import com.mobile.order.adapter.DisplayUpdateProductsAdapter;
 import com.mobile.order.adapter.FirestoreProducts;
+import com.mobile.order.async.RefreshProduct;
 import com.mobile.order.helper.AppUtil;
 import com.mobile.order.helper.FirestoreUtil;
 import com.mobile.order.helper.FontHelper;
@@ -124,8 +125,8 @@ public class DisplayAndUpdateProductActivity  extends BaseActivity implements Fi
                             if(count == totalRow){
                                 AppUtil.putInProductPref(DisplayAndUpdateProductActivity.this, 0);
                                 updateProducts.setEnabled(true);
-                                FirestoreUtil util=new FirestoreUtil();
-                                util.getProducts(DisplayAndUpdateProductActivity.this, null, false);
+                                RefreshProduct asyncRefreshProduct = new RefreshProduct(DisplayAndUpdateProductActivity.this);
+                                asyncRefreshProduct.execute();
                                 Toast.makeText(getApplicationContext(),
                                         "All Products are updated!",
                                         Toast.LENGTH_LONG).show();
