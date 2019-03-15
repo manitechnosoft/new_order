@@ -36,6 +36,16 @@
                     android:text="@string/sales_person_id"
                     android:textSize="@dimen/title_text"
                     android:inputType="textNoSuggestions"/>
+                    <TextView
+
+                        android:id="@+id/mrp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_weight=".5"
+                        android:text="@string/mrp"
+                        android:textSize="@dimen/title_text"
+                        android:inputType="textNoSuggestions"/>
                 <TextView
 
                     android:id="@+id/type"
@@ -43,7 +53,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:layout_weight=".5"
-                    android:text="@string/first_name"
+                    android:text="@string/unit_type"
                     android:textSize="@dimen/title_text"
                     android:inputType="textNoSuggestions"/>
                 <TextView
@@ -53,7 +63,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:layout_weight=".5"
-                    android:text="@string/last_name"
+                    android:text="@string/quantity"
                     android:textSize="@dimen/title_text"
                     android:inputType="textNoSuggestions"/>
                     <TextView
@@ -63,7 +73,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:layout_weight=".5"
-                        android:text="@string/last_name"
+                        android:text="@string/price"
                         android:textSize="@dimen/title_text"
                         android:inputType="textNoSuggestions"/>
                     <ImageView

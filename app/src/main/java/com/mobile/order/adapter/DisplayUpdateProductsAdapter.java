@@ -67,8 +67,7 @@ public class DisplayUpdateProductsAdapter extends RecyclerView.Adapter<DisplayUp
                 public void onClick(View v) {
                     //v.getId() will give you the image id
                     if(displayProductActivity.isEditFlag()){
-                        deleteSalesPerson(productId.getText().toString(), productDocId.getText().toString());
-
+                        deleteProduct(productId.getText().toString(), productDocId.getText().toString());
                     }
                     else{
                         Toast msg = Toast.makeText(ctx,
@@ -80,7 +79,7 @@ public class DisplayUpdateProductsAdapter extends RecyclerView.Adapter<DisplayUp
             });
         }
     }
-    private void deleteSalesPerson(final String productId, final String productDocRefId){
+    private void deleteProduct(final String productId, final String productDocRefId){
         // Pass grocery id to the next screen
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(displayProductActivity);
         String[] options ;

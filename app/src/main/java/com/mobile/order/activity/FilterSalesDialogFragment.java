@@ -100,7 +100,7 @@ public class FilterSalesDialogFragment extends DialogFragment implements Firesto
         cal.setTime(aFilter.getToDate());
         cal.add(Calendar.DATE, -90);
         aFilter.setFromDate(cal.getTime());
-        SalesOrderDisplayActivity parentActivity = (SalesOrderDisplayActivity) getActivity();
+        SalesCallbackOrderDisplayActivity parentActivity = (SalesCallbackOrderDisplayActivity) getActivity();
         daoSession = ((BaseApplication) getActivity().getApplication()).getDaoInstance();
         salesPersonDao = daoSession.getSalesPersonDao();
         salesPersonDaoList = salesPersonDao.loadAll();
@@ -138,7 +138,7 @@ public class FilterSalesDialogFragment extends DialogFragment implements Firesto
     @OnClick(R.id.button_search)
     public void onSearchClicked() {
         SalesFilter aFilter= AppUtil.getSalesFilters(null, salesPerson, fromDate, toDate, null,0);
-        SalesOrderDisplayActivity parentActivity = (SalesOrderDisplayActivity) getActivity();
+        SalesCallbackOrderDisplayActivity parentActivity = (SalesCallbackOrderDisplayActivity) getActivity();
         util.getSalesWithFilter(parentActivity,aFilter,false);
         /*if (mFilterListener != null) {
             mFilterListener.onFilter(aFilter);

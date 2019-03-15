@@ -6,9 +6,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -18,6 +22,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mobile.order.BaseApplication;
 import com.mobile.order.R;
 import com.mobile.order.fragment.AddSalesProductFragment;
 import com.mobile.order.fragment.CustomerInfoFragment;
@@ -25,6 +30,9 @@ import com.mobile.order.fragment.ReprintFragment;
 import com.mobile.order.fragment.SalesIdFragment;
 import com.mobile.order.helper.AppUtil;
 import com.mobile.order.helper.FirestoreUtil;
+import com.mobile.order.helper.FontHelper;
+import com.mobile.order.helper.Fonts;
+import com.mobile.order.model.Config;
 import com.mobile.order.model.Product;
 import com.mobile.order.model.SalesOrder;
 import com.mobile.order.model.SalesPerson;
@@ -37,6 +45,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class SalesOrderLandActivity extends BaseActivity {
+    private Config config;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
     @BindView(R.id.prev_button)
     Button prevButton;
 
@@ -58,9 +70,9 @@ public class SalesOrderLandActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_fragment);
         ButterKnife.bind(this);
-
+        config = ((BaseApplication) getApplication()).getConfig();
         Log.d("DEBUG", getResources().getConfiguration().orientation + "");
-
+        initializeToolbar();
         if (savedInstanceState == null) {
             // Instance of first fragment
             SalesIdFragment firstFragment = new SalesIdFragment();
@@ -191,6 +203,7 @@ public class SalesOrderLandActivity extends BaseActivity {
         }
         frgMgr.popBackStack(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         frgMgr.beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                 .replace(R.id.flContainer, nextFragment)
                 .disallowAddToBackStack()
                 //.addToBackStack(tag)// replace flContainer
@@ -251,6 +264,7 @@ public class SalesOrderLandActivity extends BaseActivity {
             CustomerInfoFragment customerInfo = (CustomerInfoFragment) currentFragment;
             tag = CUSTOMER_INFO_TAG;
             EditText custMobile = customerInfo.getView().findViewById(R.id.mobile);
+            EditText custName = customerInfo.getView().findViewById(R.id.customer_name);
             Fragment productsFragment = frgMgr.findFragmentByTag(PRODUCTS_TAG);
             if(null!=productsFragment){
                 prevFragment =  productsFragment;
@@ -260,12 +274,14 @@ public class SalesOrderLandActivity extends BaseActivity {
             }
             if(!custMobile.getText().toString().isEmpty()){
                 newOrder.setCustomerPhone(custMobile.getText().toString());
+                newOrder.setCustomerName(custName.getText().toString());
             }
             prevFragment.setArguments(bundle);
             bundle.putSerializable("newOrder",newOrder);
         }
         frgMgr.popBackStack(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         frgMgr.beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
                 .replace(R.id.flContainer, prevFragment) // replace flContainer
                 .disallowAddToBackStack()
                 //.addToBackStack(tag)// replace flContainer
@@ -293,7 +309,10 @@ public class SalesOrderLandActivity extends BaseActivity {
     private Double calculateTotal(List<Product> productList){
         Double total=0D;
         for (Product aDetail : productList) {
-            total = total+aDetail.getRetailSalePrice();
+            Float userQuantity = aDetail.getQuantity();
+            Double productPrice = aDetail.getRetailSalePrice() * userQuantity;
+            Double roundedPrice = AppUtil.round(productPrice,3);
+            total = total+roundedPrice;
         }
         return  AppUtil.round(total,3);
     }
@@ -314,5 +333,44 @@ public class SalesOrderLandActivity extends BaseActivity {
                 });
 
         return  builder1.create();
+    }
+    /**
+     * Method used to initialize toolbar
+     */
+    private void initializeToolbar() {
+        setSupportActionBar(toolbar);
+        ActionBar supportActionBar = getSupportActionBar();
+        if (supportActionBar != null) {
+            //supportActionBar.setDisplayHomeAsUpEnabled(true);
+            //supportActionBar.setDisplayShowHomeEnabled(true);
+            supportActionBar.setTitle(AppUtil.applyFontStyle(
+                    this.getResources().getString(R.string.app_name),
+                    FontHelper.getFont(Fonts.MULI_SEMI_BOLD))
+            );
+            supportActionBar.setDisplayShowTitleEnabled(true);
+            supportActionBar.setDisplayShowCustomEnabled(true);
+            //supportActionBar.setCustomView(R.layout.custom_action_bar_layout);
+            //supportActionBar.setElevation(4);
+        }
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_logout) {
+            config.logoutUser(this);
+        }
+
+        return true;
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.welcome, menu);
+        return true;
+    }
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.refresh);
+        item.setVisible(false);
+       return true;
     }
 }

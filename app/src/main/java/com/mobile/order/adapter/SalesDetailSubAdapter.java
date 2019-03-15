@@ -1,7 +1,6 @@
 package com.mobile.order.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mobile.order.R;
-import com.mobile.order.activity.SalesOrderDisplayActivity;
+import com.mobile.order.activity.SalesCallbackOrderDisplayActivity;
 import com.mobile.order.model.Product;
 import com.mobile.order.model.SalesOrder;
 
@@ -25,9 +24,9 @@ public class SalesDetailSubAdapter extends RecyclerView.Adapter<SalesDetailSubAd
     String pattern = "dd-MMM-yyyy";
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
     private List<SalesOrder> salesList;
-    private SalesOrderDisplayActivity.SalesItemListener mItemListener;
+    private SalesCallbackOrderDisplayActivity.SalesItemListener mItemListener;
     private Context context;
-    public SalesDetailSubAdapter(List<SalesOrder> salesList, SalesOrderDisplayActivity.SalesItemListener itemListener) {
+    public SalesDetailSubAdapter(List<SalesOrder> salesList, SalesCallbackOrderDisplayActivity.SalesItemListener itemListener) {
         setList(salesList);
         mItemListener = itemListener;
     }
@@ -115,7 +114,7 @@ public class SalesDetailSubAdapter extends RecyclerView.Adapter<SalesDetailSubAd
 
         //private SalesActivity.SalesItemListener mItemListener;
 
-        public ViewHolder(View itemView,SalesOrderDisplayActivity.SalesItemListener listener) {
+        public ViewHolder(View itemView, SalesCallbackOrderDisplayActivity.SalesItemListener listener) {
             super(itemView);
             mItemListener = listener;
             salesId = itemView.findViewById(R.id.sales_id);

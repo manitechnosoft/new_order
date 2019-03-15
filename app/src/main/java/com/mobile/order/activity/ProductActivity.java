@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,16 +16,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.mobile.order.BaseApplication;
 import com.mobile.order.R;
-import com.mobile.order.adapter.FirestoreProducts;
+import com.mobile.order.adapter.FirestoreProductCallback;
 import com.mobile.order.filter.MoneyValueFilter;
 import com.mobile.order.helper.FirestoreUtil;
 import com.mobile.order.model.DaoSession;
@@ -40,7 +35,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class ProductActivity extends BaseActivity implements
-        FirestoreProducts {
+        FirestoreProductCallback {
     private Query mQuery;
     private ActionBar supportActionBar;
 

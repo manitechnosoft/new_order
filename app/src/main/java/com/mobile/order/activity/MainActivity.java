@@ -2,8 +2,6 @@ package com.mobile.order.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -62,12 +60,12 @@ public class MainActivity extends BaseActivity {
     }
     @OnClick(R.id.display_sales_order)
     public void landDisplaySalesOrder() {
-        Intent intent = new Intent(MainActivity.this, SalesOrderDisplayActivity.class);
+        Intent intent = new Intent(MainActivity.this, SalesCallbackOrderDisplayActivity.class);
         startActivity(intent);
     }
     @OnClick(R.id.display_today_sales_order)
     public void landDisplaySimapleSalesOrder() {
-        Intent intent = new Intent(MainActivity.this, SalesOrderSimpleDisplayActivity.class);
+        Intent intent = new Intent(MainActivity.this, SalesCallbackOrderSimpleDisplayActivity.class);
         startActivity(intent);
     }
     @OnClick(R.id.new_design)
@@ -79,11 +77,11 @@ public class MainActivity extends BaseActivity {
     public void scanBarcode(View view) {
         new IntentIntegrator((Activity)this).initiateScan();
     }
-    @OnClick(R.id.turn_light)
+   /* @OnClick(R.id.turn_light)
     public void onAndOff() {
         Intent intent = new Intent(MainActivity.this, OnOffCameraFlashlight.class);
         startActivity(intent);
-    }
+    }*/
     @OnClick(R.id.log_out)
     public void logout() {
         config.logoutUser(this);

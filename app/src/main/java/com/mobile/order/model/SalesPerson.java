@@ -88,6 +88,6 @@ public SalesPerson(Long id, String salesPersonDocId, String salesPersonId, Strin
     }
 
     public String toString(){
-        return (null!=salesPersonId?salesPersonId+ " ":"")+ (null!=firstName?firstName:"")+ (null!=lastName?lastName:"") ;
+        return (null!=salesPersonId?salesPersonId+ " ":"")+ (null!=firstName?firstName:"");
     }
 }

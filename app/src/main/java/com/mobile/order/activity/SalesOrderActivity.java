@@ -34,7 +34,7 @@ import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.Transaction;
 import com.mobile.order.BaseApplication;
 import com.mobile.order.R;
-import com.mobile.order.adapter.FirestoreProducts;
+import com.mobile.order.adapter.FirestoreProductCallback;
 import com.mobile.order.adapter.FirestoreSalesPersons;
 import com.mobile.order.adapter.SalesOrderAdapter;
 import com.mobile.order.helper.AppUtil;
@@ -59,7 +59,7 @@ import butterknife.OnClick;
 
 
 public class SalesOrderActivity extends BaseActivity implements
-		FirestoreProducts, FirestoreSalesPersons {
+		FirestoreProductCallback, FirestoreSalesPersons {
 	String pattern = "dd-MMM-yyyy";
 	SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 	@BindView(R.id.sales_date)
@@ -318,7 +318,10 @@ Button confirmSalesOrder;
 	private void calculateTotal(){
 		Double total=0D;
 		for (Product aDetail : productsDetailList) {
-			total = total+aDetail.getRetailSalePrice();
+			Float userQuantity = aDetail.getQuantity();
+			Double productPrice = aDetail.getRetailSalePrice() * userQuantity;
+			Double roundedPrice = AppUtil.round(productPrice,3);
+			total = total+roundedPrice;
 		}
 		orderTotal.setText(total.toString());
 	}
@@ -453,9 +456,17 @@ Button confirmSalesOrder;
 	}
 	@OnClick(R.id.btn_cancel)
 	public void cancel() {
-			Intent intent = new Intent(this, SalesOrderDisplayActivity.class);
-
-			startActivity(intent);
+        String user= AppUtil.getFromLoginPref(this);
+        if(user.equals("SALES")) {
+            Intent intent = new Intent(this, SalesOrderLandActivity.class);
+            this.startActivity(intent);
+            finish();
+        }
+        if(user.equals("ADMIN")) {
+            Intent intent = new Intent(this, SalesCallbackOrderDisplayActivity.class);
+            this.startActivity(intent);
+            finish();
+        }
 	}
 	@OnClick(R.id.btn_confirm_save)
 	public void generateOrder() {
@@ -481,9 +492,18 @@ Button confirmSalesOrder;
 						confirmSalesOrder.setEnabled(true);
 						Toast.makeText(SalesOrderActivity.this, "Sales Order Updated Successfully!",
 								Toast.LENGTH_SHORT).show();
-						Intent intent = new Intent(SalesOrderActivity.this, SalesOrderDisplayActivity.class);
+						String user= AppUtil.getFromLoginPref(SalesOrderActivity.this);
+						if("ADMIN".equals(user)){
+							Intent intent = new Intent(SalesOrderActivity.this, SalesCallbackOrderDisplayActivity.class);
+							startActivity(intent);
+							finish();
+						}
+						else if("SALES".equals(user)){
+							Intent intent = new Intent(SalesOrderActivity.this, SalesOrderLandActivity.class);
+							startActivity(intent);
+							finish();
+						}
 
-						startActivity(intent);
 					}
 				})
 						.addOnFailureListener(new OnFailureListener() {

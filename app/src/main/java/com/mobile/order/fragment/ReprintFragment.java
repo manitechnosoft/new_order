@@ -11,9 +11,8 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 
 import com.mobile.order.R;
-import com.mobile.order.activity.MainActivity;
 import com.mobile.order.activity.SalesOrderLandActivity;
-import com.mobile.order.activity.SalesOrderSimpleDisplayActivity;
+import com.mobile.order.activity.SalesCallbackOrderSimpleDisplayActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,7 +58,7 @@ public class ReprintFragment extends Fragment {
     }
     @OnClick(R.id.re_print)
     public void rePrint(){
-        Intent intent = new Intent(getActivity(), SalesOrderSimpleDisplayActivity.class);
+        Intent intent = new Intent(getActivity(), SalesCallbackOrderSimpleDisplayActivity.class);
         startActivity(intent);
         getActivity().finish();
     }

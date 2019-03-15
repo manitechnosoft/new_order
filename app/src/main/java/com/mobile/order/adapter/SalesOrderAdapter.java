@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.mobile.order.R;
 import com.mobile.order.activity.SalesOrderActivity;
+import com.mobile.order.helper.AppUtil;
 import com.mobile.order.model.Product;
 
 import java.util.List;
@@ -33,7 +34,8 @@ private boolean enableDeleteFlg;
     public class MyViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.product_id)
         public TextView productId;
-
+        @BindView(R.id.mrp)
+        public TextView mrp;
         @BindView(R.id.type)
         public TextView retailType;
 
@@ -74,9 +76,13 @@ private boolean enableDeleteFlg;
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         holder.productId.setText(productList.get(position).getProductId());
+        holder.mrp.setText(productList.get(position).getRetailSalePrice().toString());
         holder.quantity.setText(productList.get(position).getQuantity().toString());
         holder.retailType.setText(productList.get(position).getRetailSaleType());
-        holder.retailPrice.setText(null!=productList.get(position).getRetailSalePrice() ?productList.get(position).getRetailSalePrice().toString():"0");
+        Float userQuantity = productList.get(position).getQuantity();
+        Double productPrice =  productList.get(position).getRetailSalePrice() * userQuantity;
+        Double roundedPrice = AppUtil.round(productPrice,3);
+        holder.retailPrice.setText(null!=roundedPrice ?roundedPrice.toString():"0");
         if(!enableDeleteFlg){
             holder.delete.setVisibility(View.GONE);
         }

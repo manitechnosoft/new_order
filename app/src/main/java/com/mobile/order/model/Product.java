@@ -20,6 +20,7 @@ public class Product implements Serializable {
     private Float quantity;
     private boolean isSync;
 
+    private transient Double total;
     /**
      * Used for active entity operations.
      */
@@ -137,5 +138,13 @@ public Product(Long id, String productDocId, String productName,
     }
     public String toString(){
         return (null!=productId?productId+ " ":"")+productName;
+    }
+
+    public Double getTotal() {
+        return total;
+    }
+
+    public void setTotal(Double total) {
+        this.total = total;
     }
 }

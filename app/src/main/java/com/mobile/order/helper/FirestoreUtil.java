@@ -12,7 +12,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
@@ -27,14 +26,10 @@ import com.mobile.order.BaseApplication;
 import com.mobile.order.activity.DisplayAndUpdateProductActivity;
 import com.mobile.order.activity.DisplayAndUpdateSalesPersonActivity;
 import com.mobile.order.activity.MainActivity;
-import com.mobile.order.activity.ProductActivity;
-import com.mobile.order.activity.SalesOrderActivity;
-import com.mobile.order.activity.SalesOrderDisplayActivity;
+import com.mobile.order.activity.SalesCallbackOrderSimpleDisplayActivity;
 import com.mobile.order.activity.SalesOrderLandActivity;
-import com.mobile.order.activity.SalesOrderSimpleDisplayActivity;
-import com.mobile.order.activity.SuccessActivity;
-import com.mobile.order.adapter.FirestoreProducts;
-import com.mobile.order.adapter.FirestoreSales;
+import com.mobile.order.adapter.FirestoreProductCallback;
+import com.mobile.order.adapter.FirestoreSalesCallback;
 import com.mobile.order.adapter.FirestoreSalesFilter;
 import com.mobile.order.adapter.FirestoreSalesPersons;
 import com.mobile.order.model.DaoSession;
@@ -197,8 +192,8 @@ public class FirestoreUtil {
     }
     private static void refreshSalesOrdersList(){
         Activity currentActivity = AppUtil.getRunningActivity();
-        if(currentActivity instanceof SalesOrderSimpleDisplayActivity){
-            SalesOrderSimpleDisplayActivity salesOrderDisplay = (SalesOrderSimpleDisplayActivity)currentActivity;
+        if(currentActivity instanceof SalesCallbackOrderSimpleDisplayActivity){
+            SalesCallbackOrderSimpleDisplayActivity salesOrderDisplay = (SalesCallbackOrderSimpleDisplayActivity)currentActivity;
             salesOrderDisplay.fetchSalesList();
         }
     }
@@ -244,7 +239,7 @@ public class FirestoreUtil {
     public static CollectionReference getLocationCollectionRef(){
         return getFirestoreDB().collection("locations");
     }
-    public void getProducts(final Context ctx, final FirestoreProducts currentFragment,final boolean loadProductsFlg){
+    public void getProducts(final Context ctx, final FirestoreProductCallback currentFragment, final boolean loadProductsFlg){
         final List<Product> productList=new ArrayList<Product>();
 
         Query query = FirestoreUtil.getProductCollectionRef();
@@ -272,12 +267,12 @@ public class FirestoreUtil {
                             aProduct.setId(null);
                             productDao.insert(aProduct);
                         }
-                        FirestoreProducts firestoreInterface = null;
-                        if(null!=currentFragment){
-                            firestoreInterface = (FirestoreProducts)currentFragment;
+                        FirestoreProductCallback firestoreInterface = null;
+                        if(null!=currentFragment && currentFragment instanceof FirestoreProductCallback){
+                            firestoreInterface = (FirestoreProductCallback)currentFragment;
                         }
-                        else if(null!=ctx){
-                            firestoreInterface = (FirestoreProducts)ctx;
+                        else if(null!=ctx  && ctx instanceof FirestoreProductCallback){
+                            firestoreInterface = (FirestoreProductCallback)ctx;
                         }
                         if(null!= firestoreInterface && loadProductsFlg)
                         firestoreInterface.loadProducts(productList);
@@ -318,10 +313,10 @@ public class FirestoreUtil {
                         }
                         FirestoreSalesPersons firestoreInterface = null;
 
-                        if(null==currentFragment){
+                        if(null==currentFragment && ctx instanceof FirestoreSalesPersons){
                             firestoreInterface = (FirestoreSalesPersons)ctx;
                         }
-                        else if(null!=currentFragment) {
+                        else if(null!=currentFragment && currentFragment instanceof FirestoreSalesPersons) {
                             firestoreInterface = (FirestoreSalesPersons)currentFragment;
                         }
                         if(null!=firestoreInterface)
@@ -368,8 +363,8 @@ public class FirestoreUtil {
                             firestoreInterface.refreshCustomerSpinner(salesList);
                         }
                         else{
-                            FirestoreSales firestoreSales = (FirestoreSales) ctx;
-                            firestoreSales.loadSalesItems(salesList);
+                            FirestoreSalesCallback firestoreSalesCallback = (FirestoreSalesCallback) ctx;
+                            firestoreSalesCallback.loadSalesItems(salesList);
                         }
 
                     }

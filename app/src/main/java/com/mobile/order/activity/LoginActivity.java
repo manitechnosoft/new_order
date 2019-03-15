@@ -1,15 +1,12 @@
 package com.mobile.order.activity;
 
-import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
-import android.view.ViewPropertyAnimator;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
@@ -18,23 +15,16 @@ import android.widget.Toast;
 
 import com.mobile.order.BaseApplication;
 import com.mobile.order.R;
-import com.mobile.order.adapter.DisplayUpdateProductsAdapter;
-import com.mobile.order.adapter.DisplayUpdateSalesPersonAdapter;
-import com.mobile.order.adapter.FirestoreProducts;
-import com.mobile.order.adapter.FirestoreSalesPersons;
 import com.mobile.order.async.RefreshProduct;
 import com.mobile.order.async.RefreshSalesPerson;
+import com.mobile.order.helper.AppUtil;
 import com.mobile.order.model.Config;
 import com.mobile.order.model.DaoSession;
-import com.mobile.order.model.Product;
 import com.mobile.order.model.ProductDao;
-import com.mobile.order.model.SalesPerson;
 import com.mobile.order.model.SalesPersonDao;
 import com.mobile.order.model.User;
 
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -188,14 +178,15 @@ public class LoginActivity extends BaseActivity {
         switch (userId){
             case "admin":
                 intent = new Intent(LoginActivity.this, MainActivity.class);
+                AppUtil.putInLoginPref(this, "ADMIN");
                 break;
             case "sales":
-                intent = new Intent(LoginActivity.this, SalesOrderDisplayActivity.class);
-                intent.putExtra("saleFlg", true);
+                intent = new Intent(LoginActivity.this, SalesOrderLandActivity.class);
+                AppUtil.putInLoginPref(this, "SALES");
                 break;
             case "delivery":
-                intent = new Intent(LoginActivity.this, SalesOrderDisplayActivity.class);
-                intent.putExtra("deliveryFlg", true);
+                intent = new Intent(LoginActivity.this, SalesCallbackOrderSimpleDisplayActivity.class);
+                AppUtil.putInLoginPref(this, "DELIVERY");
                 break;
         }
         return  intent;

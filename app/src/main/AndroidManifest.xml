@@ -33,10 +33,10 @@
         <activity android:name="com.mobile.order.activity.DisplayAndUpdateSalesPersonActivity">
 
         </activity>
-        <activity android:name="com.mobile.order.activity.SalesOrderDisplayActivity">
+        <activity android:name="com.mobile.order.activity.SalesCallbackOrderDisplayActivity">
 
         </activity>
-        <activity android:name="com.mobile.order.activity.SalesOrderSimpleDisplayActivity">
+        <activity android:name="com.mobile.order.activity.SalesCallbackOrderSimpleDisplayActivity">
 
         </activity>
         <activity android:name="com.mobile.order.activity.LoginActivity">

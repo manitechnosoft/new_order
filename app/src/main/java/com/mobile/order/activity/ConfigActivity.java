@@ -1,14 +1,12 @@
 package com.mobile.order.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import com.mobile.order.BaseApplication;
 import com.mobile.order.R;
-import com.mobile.order.adapter.FirestoreProducts;
+import com.mobile.order.adapter.FirestoreProductCallback;
 import com.mobile.order.adapter.FirestoreSalesPersons;
-import com.mobile.order.helper.AppUtil;
 import com.mobile.order.helper.FirestoreUtil;
 import com.mobile.order.model.DaoSession;
 import com.mobile.order.model.Product;
@@ -22,7 +20,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class ConfigActivity  extends BaseActivity implements
-        FirestoreProducts, FirestoreSalesPersons {
+        FirestoreProductCallback, FirestoreSalesPersons {
     DaoSession daoSession;
     private ProductDao productDao;
     private SalesPersonDao salesPersonDao;

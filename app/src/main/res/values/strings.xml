@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NewOrder</string>
+    <string name="app_name">New Order</string>
     <string name="location">Location</string>
     <string name="list_products">List Products</string>
     <string name="display_product_name">Display Product</string>

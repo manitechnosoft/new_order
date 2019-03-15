@@ -25,8 +25,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.mobile.order.BaseApplication;
 import com.mobile.order.R;
+import com.mobile.order.activity.SalesCallbackOrderDisplayActivity;
 import com.mobile.order.activity.SalesOrderActivity;
-import com.mobile.order.activity.SalesOrderDisplayActivity;
+import com.mobile.order.helper.AppUtil;
 import com.mobile.order.helper.FirestoreUtil;
 import com.mobile.order.model.DaoSession;
 import com.mobile.order.model.SalesOrder;
@@ -45,11 +46,11 @@ public class SalesAdapterGroupByDate extends RecyclerView.Adapter<SalesAdapterGr
     private List<SalesOrder> salesList;
     private Map<String,List<SalesOrder>> salesMapByMonthAndYear;
     private List<String> monthAndYearKeyList;
-    private SalesOrderDisplayActivity.SalesItemListener mItemListener;
+    private SalesCallbackOrderDisplayActivity.SalesItemListener mItemListener;
     private Context context;
     private AppCompatActivity currentActivity;
     DaoSession daoSession;
-    public SalesAdapterGroupByDate(AppCompatActivity activity, Map<String,List<SalesOrder>> salesMapByMonthAndYear , List<SalesOrder> salesList, SalesOrderDisplayActivity.SalesItemListener itemListener) {
+    public SalesAdapterGroupByDate(AppCompatActivity activity, Map<String,List<SalesOrder>> salesMapByMonthAndYear , List<SalesOrder> salesList, SalesCallbackOrderDisplayActivity.SalesItemListener itemListener) {
         setList(salesMapByMonthAndYear, salesList);
         currentActivity = activity;
         mItemListener = itemListener;
@@ -73,7 +74,7 @@ public class SalesAdapterGroupByDate extends RecyclerView.Adapter<SalesAdapterGr
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         viewHolder.parentDate.setText(monthAndYearKeyList.get(position));
-        SalesOrderDisplayActivity.SalesItemListener mItemListener = new SalesOrderDisplayActivity.SalesItemListener() {
+        SalesCallbackOrderDisplayActivity.SalesItemListener mItemListener = new SalesCallbackOrderDisplayActivity.SalesItemListener() {
             @Override
             public void onNoteClick(SalesOrder clickedSale) {
                 //mActionsListener.openNoteDetails(clickedNote);
@@ -90,27 +91,31 @@ public class SalesAdapterGroupByDate extends RecyclerView.Adapter<SalesAdapterGr
         final List<SalesOrder> childSalesList = salesMapByMonthAndYear.get(monthAndYearKeyList.get(position));
         SalesDetailSubAdapter childAdapter=new SalesDetailSubAdapter(childSalesList,mItemListener);
         viewHolder.salesListByMonth.setAdapter(childAdapter);
-        viewHolder.salesListByMonth.addOnItemTouchListener(new RecyclerItemListener(context, viewHolder.salesListByMonth,
-                new RecyclerItemListener.RecyclerTouchListener() {
-                    public void onClickItem(View v, int position) {
-                        CardView cardView=(CardView)v;
-                        LinearLayout linearLayout = (LinearLayout)cardView.getChildAt(0);
-                        TextView docIdElement = (TextView)linearLayout.getChildAt(0);
+        String user= AppUtil.getFromLoginPref(context);
+        if(user.equals("ADMIN") || user.equals("SALES")){
+            viewHolder.salesListByMonth.addOnItemTouchListener(new RecyclerItemListener(context, viewHolder.salesListByMonth,
+                    new RecyclerItemListener.RecyclerTouchListener() {
+                        public void onClickItem(View v, int position) {
+                            CardView cardView=(CardView)v;
+                            LinearLayout linearLayout = (LinearLayout)cardView.getChildAt(0);
+                            TextView docIdElement = (TextView)linearLayout.getChildAt(0);
 
-                        LinearLayout innerlinearLayout =(LinearLayout)((ScrollView) ((LinearLayout)linearLayout.getChildAt(1)).getChildAt(0)).getChildAt(0);
-                        LinearLayout salesIdLayout = (LinearLayout)innerlinearLayout.getChildAt(0);
-                        TextView salesIdElement = (TextView)salesIdLayout.getChildAt(1);
+                            LinearLayout innerlinearLayout =(LinearLayout)((ScrollView) ((LinearLayout)linearLayout.getChildAt(1)).getChildAt(0)).getChildAt(0);
+                            LinearLayout salesIdLayout = (LinearLayout)innerlinearLayout.getChildAt(0);
+                            TextView salesIdElement = (TextView)salesIdLayout.getChildAt(1);
 
-                        LinearLayout customerLayout = (LinearLayout)innerlinearLayout.getChildAt(2);
-                        TextView custNameElement = (TextView)customerLayout.getChildAt(1);
+                            LinearLayout customerLayout = (LinearLayout)innerlinearLayout.getChildAt(2);
+                            TextView custNameElement = (TextView)customerLayout.getChildAt(1);
 
-                        showOptions(salesIdElement.getText().toString() , custNameElement.getText().toString() ,docIdElement.getText().toString() );
-                    }
+                            showOptions(salesIdElement.getText().toString() , custNameElement.getText().toString() ,docIdElement.getText().toString() );
+                        }
 
-                    public void onLongClickItem(View v, int position) {
-                        System.out.println("On Long Click Item interface");
-                    }
-                }));
+                        public void onLongClickItem(View v, int position) {
+                            System.out.println("On Long Click Item interface");
+                        }
+                    }));
+        }
+
         childAdapter.notifyDataSetChanged();
         //Sales aSale = salesList.get(position);
 
@@ -226,9 +231,9 @@ public class SalesAdapterGroupByDate extends RecyclerView.Adapter<SalesAdapterGr
     public class ViewHolder extends RecyclerView.ViewHolder{
         public RecyclerView salesListByMonth;
 public TextView parentDate;
-        //private SalesOrderDisplayActivity.SalesItemListener mItemListener;
+        //private SalesCallbackOrderDisplayActivity.SalesItemListener mItemListener;
 
-        public ViewHolder(View itemView, SalesOrderDisplayActivity.SalesItemListener listener) {
+        public ViewHolder(View itemView, SalesCallbackOrderDisplayActivity.SalesItemListener listener) {
             super(itemView);
             mItemListener = listener;
             salesListByMonth = itemView.findViewById(R.id.sales_list_by_month_year_holder);

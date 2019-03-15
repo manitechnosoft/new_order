@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -21,7 +20,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.mobile.order.BaseApplication;
 import com.mobile.order.R;
 import com.mobile.order.adapter.DisplayUpdateProductsAdapter;
-import com.mobile.order.adapter.FirestoreProducts;
+import com.mobile.order.adapter.FirestoreProductCallback;
 import com.mobile.order.async.RefreshProduct;
 import com.mobile.order.helper.AppUtil;
 import com.mobile.order.helper.FirestoreUtil;
@@ -38,7 +37,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class DisplayAndUpdateProductActivity  extends BaseActivity implements FirestoreProducts {
+public class DisplayAndUpdateProductActivity  extends BaseActivity implements FirestoreProductCallback {
     @BindView(R.id.product_list)
     RecyclerView productList;
 

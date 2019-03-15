@@ -67,17 +67,18 @@
         android:layout_height="wrap_content"
         android:text="New Design"
         android:layout_width="fill_parent"></Button>
-    <Button
-        android:id="@+id/barcode_reader"
-        android:layout_height="wrap_content"
-        android:text="New Design"
-        android:layout_width="fill_parent"></Button>
 
     <Button
+        android:id="@+id/barcode_reader"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Bar Code Reader"></Button>
+
+   <!-- <Button
         android:id="@+id/turn_light"
         android:layout_height="wrap_content"
         android:text="Turn Off/On"
-        android:layout_width="fill_parent"></Button>
+        android:layout_width="fill_parent"></Button>-->
     <Button
         android:id="@+id/log_out"
         android:layout_height="wrap_content"

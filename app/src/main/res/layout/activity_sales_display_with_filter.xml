@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mobile.order.activity.SalesOrderSimpleDisplayActivity">
+    tools:context="com.mobile.order.activity.SalesCallbackOrderSimpleDisplayActivity">
 
    <RelativeLayout
        android:layout_width="match_parent"
@@ -167,7 +167,8 @@
         android:onClick="addNewItem"
         android:src="@drawable/ic_add_white_24dp"
         android:tint="@color/colorPrimary"
-        app:fabSize="normal" />
+        app:fabSize="normal"
+        android:visibility="gone"/>
 
 
 

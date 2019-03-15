@@ -6,7 +6,21 @@
               android:layout_height="match_parent"
     android:gravity="center"
     android:includeFontPadding="false">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/customer_name"
+        android:id="@+id/tvCustomer"
+        android:layout_gravity="right"/>
 
+    <EditText
+        android:id="@+id/customer_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:hint="@string/customer_name"
+        android:paddingLeft="5dp" />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

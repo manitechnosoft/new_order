@@ -313,13 +313,29 @@ public class AppUtil {
                 ctx.getString(R.string.updateproduct_pref), Context.MODE_PRIVATE);
     }
     public static Integer getFromProductPref(Context ctx){
-        SharedPreferences sharedPref = getAppSharedPref(ctx);
-        return sharedPref.getInt(ctx.getString(R.string.updateproduct_pref),0);
+        return getFromPref(ctx, ctx.getString(R.string.updateproduct_pref));
     }
     public static void putInProductPref(Context ctx, int counter){
+        putInPref(ctx,counter, ctx.getString(R.string.updateproduct_pref));
+    }
+    public static void putInLoginPref(Context ctx, String login){
         SharedPreferences sharedPref = getAppSharedPref(ctx);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt(ctx.getString(R.string.updateproduct_pref), counter);
+        editor.putString("com.mobile.order.login", login);
         editor.commit();
+    }
+    public static String getFromLoginPref(Context ctx){
+        SharedPreferences sharedPref = getAppSharedPref(ctx);
+        return sharedPref.getString("com.mobile.order.login","");
+    }
+    public static void putInPref(Context ctx, int counter, String key){
+        SharedPreferences sharedPref = getAppSharedPref(ctx);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(key, counter);
+        editor.commit();
+    }
+    public static Integer getFromPref(Context ctx, String key){
+        SharedPreferences sharedPref = getAppSharedPref(ctx);
+        return sharedPref.getInt(key,0);
     }
 }

@@ -17,8 +17,8 @@ import java.util.List;
 
 public class ProductListAdapter  extends BaseAdapter implements Filterable {
     Context c;
-    List<Product> actualContactsList;
-    List<Product> contactsList = new ArrayList<>();
+    List<Product> actualProductsList;
+    List<Product> productsList = new ArrayList<>();
     private OnItemClickListener mListener;
 
     // View Type for Separators
@@ -29,11 +29,11 @@ public class ProductListAdapter  extends BaseAdapter implements Filterable {
     // -- Separators and Regular rows --
     private static final int ITEM_VIEW_TYPE_COUNT = 2;
 
-    public ProductListAdapter(Context c, List<Product> contactsList, OnItemClickListener listener) {
+    public ProductListAdapter(Context c, List<Product> productsList, OnItemClickListener listener) {
         this.c = c;
-        this.contactsList = contactsList;
+        this.productsList = productsList;
         this.mListener = listener;
-        prepareActualContactList(contactsList);
+        prepareActualContactList(productsList);
     }
 
     public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -44,19 +44,19 @@ public class ProductListAdapter  extends BaseAdapter implements Filterable {
 
     @Override
     public int getCount() {
-        if(contactsList==null)
+        if(productsList ==null)
             return 0;
         else
-        return contactsList.size();
+        return productsList.size();
     }
     private void prepareActualContactList(List<Product> contactsList){
-        this.actualContactsList  = new ArrayList<>();
-        actualContactsList.addAll(contactsList);
+        this.actualProductsList = new ArrayList<>();
+        actualProductsList.addAll(contactsList);
 
     }
     @Override
     public Object getItem(int position) {
-        return contactsList.get(position);
+        return productsList.get(position);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class ProductListAdapter  extends BaseAdapter implements Filterable {
     public View getView(int position, View convertView, ViewGroup viewGroup) {
         View view;
 
-        Product contact = contactsList.get(position);
+        Product contact = productsList.get(position);
         int itemViewType = getItemViewType(position);
 
         if (convertView == null) {
@@ -108,27 +108,27 @@ public class ProductListAdapter  extends BaseAdapter implements Filterable {
                 // we just set the `values` property to the
                 // original contacts list which contains all of them
                 if (constraint == null || constraint.length() == 0) {
-                    results.values = contactsList;
-                    results.count = contactsList.size();
+                    results.values = productsList;
+                    results.count = productsList.size();
                 }
                 else {
                     // Some search copnstraint has been passed
                     // so let's filter accordingly
                     ArrayList<Product> filteredContacts = new ArrayList<>();
-                    contactsList.clear();
+                    productsList = new ArrayList<>();
                     // We'll go through all the contacts and see
                     // if they contain the supplied string
-                    for (Product c : actualContactsList) {
+                    for (Product c : actualProductsList) {
                         if (c.getProductId().toUpperCase().contains( constraint.toString().toUpperCase() )) {
                             // if `contains` == true then add it
                             // to our filtered list
-                            contactsList.add(c);
+                            productsList.add(c);
                         }
                     }
 
                     // Finally set the filtered values and size/count
-                    results.values = contactsList;
-                    results.count = contactsList.size();
+                    results.values = productsList;
+                    results.count = productsList.size();
                 }
 
                 // Return our FilterResults object
@@ -138,7 +138,7 @@ public class ProductListAdapter  extends BaseAdapter implements Filterable {
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults)
             {
-                contactsList = (ArrayList<Product>) filterResults.values;
+                productsList = (ArrayList<Product>) filterResults.values;
                 notifyDataSetChanged();
             }
         };

@@ -26,7 +26,7 @@ import android.widget.Toast;
 
 import com.mobile.order.BaseApplication;
 import com.mobile.order.R;
-import com.mobile.order.adapter.FirestoreProducts;
+import com.mobile.order.adapter.FirestoreProductCallback;
 import com.mobile.order.adapter.ProductListAdapter;
 import com.mobile.order.adapter.SalesOrderAdapter;
 import com.mobile.order.filter.MoneyValueFilter;
@@ -44,7 +44,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AddSalesProductFragment extends Fragment implements FirestoreProducts {
+public class AddSalesProductFragment extends Fragment implements FirestoreProductCallback {
   DaoSession daoSession;
   ProductDao productDao;
   List<Product> productsList;
@@ -60,7 +60,8 @@ public class AddSalesProductFragment extends Fragment implements FirestoreProduc
 
   @BindView(R.id.price)
   EditText price;
-
+  @BindView(R.id.total)
+  TextView orderTotal;
   @BindView(R.id.type)
   Spinner productType;
 
@@ -239,7 +240,7 @@ private Product getProduct(String productCode){
 
         Double total =  storedProduct.getRetailSalePrice() * userQuantity;
         Double roundedPrice = AppUtil.round(total,3);
-
+        product1.setTotal(roundedPrice);
         product1.setRetailSalePrice(roundedPrice);
         product1.setRetailSaleType(storedProduct.getRetailSaleType());
       }
@@ -257,7 +258,7 @@ private Product getProduct(String productCode){
         productsDetailList.add(product1);
         salesDetailArrayAdapter.notifyDataSetChanged();
        // monitorChangeFlg = true;
-       // calculateTotal();
+       calculateTotal();
       }
     }
     clearFields();
@@ -320,7 +321,14 @@ private Product getProduct(String productCode){
     price.setText("");
     mrp.setText("");
   }
-
+  private void calculateTotal(){
+    Double total=0D;
+    for (Product aDetail : productsDetailList) {
+      total = total+aDetail.getRetailSalePrice();
+    }
+    Double roundedTotal = AppUtil.round(total,3);
+    orderTotal.setText(roundedTotal.toString());
+  }
   private boolean validateSalesDetails(){
     boolean flg=true;
     String toastMsg = "";
@@ -372,9 +380,10 @@ private Product getProduct(String productCode){
     productAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
       @Override
       public void onItemClick (AdapterView<?> parent, View view, int position, long id) {
-        Toast.makeText(getContext(), productsList.get(position).getProductId()+" Clicked", Toast.LENGTH_LONG).show();
-        productAutoComplete.setText(productsList.get(position).getProductId());
-        mrp.setText(productsList.get(position).getRetailSalePrice().toString());
+        Product aProduct = ((Product) parent.getItemAtPosition(position));
+        Toast.makeText(getContext(), aProduct.getProductId()+" Clicked", Toast.LENGTH_LONG).show();
+        productAutoComplete.setText(aProduct.getProductId());
+        mrp.setText(aProduct.getRetailSalePrice().toString());
       }
     });
   }
