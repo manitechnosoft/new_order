@@ -240,7 +240,9 @@ private SalesPerson getSalesPersonById(String salesPersonId){
 	@OnClick({R.id.button_clear_filter})
 	public void onClearFilterClicked() {
 		mFilterDialog.resetFilters();
-		Toast.makeText(getApplicationContext(),"clicked from bar", Toast.LENGTH_SHORT).show();
+		Toast.makeText(getApplicationContext(),"Cleared filter!", Toast.LENGTH_SHORT).show();
+		SalesFilter aFilter= AppUtil.getSalesFilters(null,null, null, null, null,-15);
+		util.getSalesWithFilter(this,aFilter,false);
 		//onFilter(Filters.getDefault());
 	}
 	public class DividerItemDecoration extends RecyclerView.ItemDecoration {

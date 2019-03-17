@@ -283,10 +283,10 @@ Button confirmSalesOrder;
 			product1.setProductId(product.getProductId());
 			product1.setManufacturer(product.getManufacturer());
 
-			Double total =  product.getRetailSalePrice() * userQuantity;
-			Double roundedPrice = AppUtil.round(total,3);
+			//Double total =  product.getRetailSalePrice() * userQuantity;
+			//Double roundedPrice = AppUtil.round(total,3);
 
-			product1.setRetailSalePrice(roundedPrice);
+			product1.setRetailSalePrice(product.getRetailSalePrice());
 			product1.setRetailSaleType(product.getRetailSaleType());
 			product1.setQuantity(userQuantity);
 			boolean existFlg = false;

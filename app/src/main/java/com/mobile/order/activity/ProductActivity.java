@@ -16,17 +16,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.mobile.order.BaseApplication;
 import com.mobile.order.R;
 import com.mobile.order.adapter.FirestoreProductCallback;
+import com.mobile.order.async.RefreshProduct;
 import com.mobile.order.filter.MoneyValueFilter;
+import com.mobile.order.helper.AppUtil;
 import com.mobile.order.helper.FirestoreUtil;
 import com.mobile.order.model.DaoSession;
 import com.mobile.order.model.Product;
 import com.mobile.order.model.ProductDao;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -41,7 +49,8 @@ public class ProductActivity extends BaseActivity implements
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-
+    @BindView(R.id.product_doc_id)
+    TextView productDocId;
     @BindView(R.id.cancel_product)
     Button cancel;
 
@@ -70,6 +79,17 @@ public class ProductActivity extends BaseActivity implements
         daoSession = ((BaseApplication) getApplication()).getDaoInstance();
         productDao = daoSession.getProductDao();
         retailPrice.setKeyListener(new MoneyValueFilter());
+
+        Bundle bundle = getIntent().getExtras();
+        if(null!=bundle){
+            Product aProduct = (Product) getIntent().getSerializableExtra("aProduct");
+            productId.setText(aProduct.getProductId());
+            productField.setText(aProduct.getProductName());
+            retailPrice.setText(aProduct.getRetailSalePrice().toString());
+            productDocId.setText(aProduct.getProductDocId());
+            addProduct.setText(R.string.update_product);
+        }
+
     }
 
     private void initToolBar(){
@@ -105,7 +125,9 @@ public class ProductActivity extends BaseActivity implements
         aProduct.setRetailSaleType(retailType.getSelectedItem().toString());
         Double price = Double.valueOf(retailPrice.getText().toString().isEmpty()?"0":retailPrice.getText().toString());
         aProduct.setRetailSalePrice(price);
-
+if(!productDocId.getText().toString().isEmpty()){
+    aProduct.setProductDocId(productDocId.getText().toString());
+}
         updateProduct(aProduct);
     }
     @OnClick(R.id.cancel_product)
@@ -137,16 +159,44 @@ private Product prepareProduct(){
                         FirestoreUtil.updateProductInFirebase(ProductActivity.this, aProduct);
                     }
                     else{
-                        Toast.makeText(ProductActivity.this, "Product Existed with the given product Id "+ aProduct.getProductId()+ "!",
-                                Toast.LENGTH_SHORT).show();
-                        addProduct.setEnabled(true);
-                        productId.requestFocusFromTouch();
-                        productId.requestFocus();
-                        /*for (DocumentSnapshot document : task.getResult()) {
-                            Toast.makeText(ProductActivity.this, "Reference ID: "+document.getId(),
-                                    Toast.LENGTH_SHORT).show();
-                            Log.d(TAG, document.getId() + " => " + document.getData());
-                        }*/
+                        for (DocumentSnapshot document : task.getResult()) {
+                            Product dbProduct = document.toObject(Product.class);
+                            if(null!=aProduct.getProductDocId() && !document.getId().equals(aProduct.getProductDocId()))
+                            {
+                                Toast.makeText(ProductActivity.this, "Product Existed with the given product Id "+ aProduct.getProductId()+ "!",
+                                        Toast.LENGTH_SHORT).show();
+                                addProduct.setEnabled(true);
+                                productId.requestFocusFromTouch();
+                                productId.requestFocus();
+                            }
+                            else{
+                                final DocumentReference productDocRef = FirestoreUtil.getProductCollectionRef().document(aProduct.getProductDocId());
+                                productDocRef.set(aProduct).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d(TAG, "Product "+ aProduct.getProductName() +" has been updated Successfully!");
+                                        Toast.makeText(getApplicationContext(),
+                                                "Product "+ aProduct.getProductName() +" has been updated Successfully!",
+                                                Toast.LENGTH_LONG).show();
+                                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                        startActivity(intent);
+                                        finish();
+
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w(TAG, "Product " + aProduct.getProductName() +" has not been updated!", e);
+                                        Toast.makeText(getApplicationContext(),
+                                                "Product "+ aProduct.getProductName() +" has not been updated!",
+                                                Toast.LENGTH_LONG).show();
+                                        addProduct.setEnabled(true);
+                                        productId.requestFocusFromTouch();
+                                        productId.requestFocus();
+                                    }
+                                });
+                            }
+                        }
                     }
 
                 }
@@ -158,24 +208,6 @@ private Product prepareProduct(){
             }
         });
 
-       /* mFirestore.collection("products").document("products").set(aProduct)
-                .addOnSuccessListener(new OnSuccessListener< Void >() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(ProductActivity.this, "User Registered",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(ProductActivity.this, "ERROR" + e.toString(),
-                                Toast.LENGTH_SHORT).show();
-                        Log.d("TAG", e.toString());
-                    }
-                });*/
-
-        //productReference.add(aProduct);
         }
     }
 

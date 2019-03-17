@@ -29,16 +29,15 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- * @author Lachezar Dobrev
  */
-public final class DecodeHintManager {
+public final class BarCodeDecodeHintManager {
 
-    private static final String TAG = DecodeHintManager.class.getSimpleName();
+    private static final String TAG = BarCodeDecodeHintManager.class.getSimpleName();
 
     // This pattern is used in decoding integer arrays.
     private static final Pattern COMMA = Pattern.compile(",");
 
-    private DecodeHintManager() {
+    private BarCodeDecodeHintManager() {
     }
 
     /**

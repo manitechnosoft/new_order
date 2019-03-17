@@ -16,11 +16,12 @@
 
 package com.google.zxing.client.android;
 
+import com.google.zxing.integration.android.BarCodeIntentIntegrator;
+
 /**
  * This class provides the constants to use when sending an Intent to Barcode Scanner.
  * These strings are effectively API and cannot be changed.
  *
- * @author dswitkin@google.com (Daniel Switkin)
  */
 public final class Intents {
     private Intents() {
@@ -182,7 +183,7 @@ public final class Intents {
          * Call {@link android.content.Intent#getStringExtra(String)} with {@link #RESULT_BARCODE_IMAGE_PATH}
          * to get a {@code String} path to a cropped and compressed png file of the barcode's image
          * as it was displayed. Only available if
-         * {@link com.google.zxing.integration.android.IntentIntegrator#setBarcodeImageEnabled(boolean)}
+         * {@link BarCodeIntentIntegrator#setBarcodeImageEnabled(boolean)}
          * is called with true.
          */
         public static final String RESULT_BARCODE_IMAGE_PATH = "SCAN_RESULT_IMAGE_PATH";

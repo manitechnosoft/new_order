@@ -1,7 +1,7 @@
 package com.mobile.order.helper;
 
 /**
- * Author: Cerlin <cerlin@linkstreet.in>.
+ *
  * Date: 27/3/17
  */
 public final class Fonts {

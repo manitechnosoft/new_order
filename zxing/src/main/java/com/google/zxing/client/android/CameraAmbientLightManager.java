@@ -27,12 +27,11 @@ import com.journeyapps.barcodescanner.camera.CameraManager;
 import com.journeyapps.barcodescanner.camera.CameraSettings;
 
 /**
- * Detects ambient light and switches on the front light when very dark, and off again when sufficiently light.
+ * Detects camera ambient light and switches on the front light when very dark,
+ * and off again when sufficiently light.
  *
- * @author Sean Owen
- * @author Nikolaus Huber
  */
-public final class AmbientLightManager implements SensorEventListener {
+public final class CameraAmbientLightManager implements SensorEventListener {
 
     private static final float TOO_DARK_LUX = 45.0f;
     private static final float BRIGHT_ENOUGH_LUX = 450.0f;
@@ -44,7 +43,7 @@ public final class AmbientLightManager implements SensorEventListener {
 
     private Handler handler;
 
-    public AmbientLightManager(Context context, CameraManager cameraManager, CameraSettings settings) {
+    public CameraAmbientLightManager(Context context, CameraManager cameraManager, CameraSettings settings) {
         this.context = context;
         this.cameraManager = cameraManager;
         this.cameraSettings = settings;

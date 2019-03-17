@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 /**
  * Description: Helper class to manage the fonts
- * Author: Cerlin <cerlin@linkstreet.in>.
+ *
  * Date: 22/4/17
  */
 

@@ -13,7 +13,7 @@ import com.mobile.order.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.BarCodeIntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.mobile.order.model.Config;
 
@@ -33,11 +33,11 @@ public class MainActivity extends BaseActivity {
         Intent intent = new Intent(MainActivity.this, ConfigActivity.class);
         startActivity(intent);
     }
-    @OnClick(R.id.sales_order)
+ /*   @OnClick(R.id.sales_order)
     public void landSalesOrder() {
         Intent intent = new Intent(MainActivity.this, SalesOrderActivity.class);
         startActivity(intent);
-    }
+    }*/
     @OnClick(R.id.add_product)
     public void landAddProducts() {
         Intent intent = new Intent(MainActivity.this, ProductActivity.class);
@@ -73,10 +73,10 @@ public class MainActivity extends BaseActivity {
         Intent intent = new Intent(MainActivity.this, SalesOrderLandActivity.class);
         startActivity(intent);
     }
-    @OnClick(R.id.barcode_reader)
+   /* @OnClick(R.id.barcode_reader)
     public void scanBarcode(View view) {
-        new IntentIntegrator((Activity)this).initiateScan();
-    }
+        new BarCodeIntentIntegrator((Activity)this).initiateScan();
+    }*/
    /* @OnClick(R.id.turn_light)
     public void onAndOff() {
         Intent intent = new Intent(MainActivity.this, OnOffCameraFlashlight.class);
@@ -88,7 +88,7 @@ public class MainActivity extends BaseActivity {
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        IntentResult result = BarCodeIntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if(result != null) {
             if(result.getContents() == null) {
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();

@@ -104,9 +104,10 @@ public class FilterSalesDialogFragment extends DialogFragment implements Firesto
         daoSession = ((BaseApplication) getActivity().getApplication()).getDaoInstance();
         salesPersonDao = daoSession.getSalesPersonDao();
         salesPersonDaoList = salesPersonDao.loadAll();
+        loadSpinnerData();
         loadSalesPersonSpinner(salesPersonDaoList);
          //util.getSalesPersonList(parentActivity,this);
-        loadSpinnerData();
+
 
         fromDate.setInputType(InputType.TYPE_NULL);
         fromDate.setOnClickListener(AppUtil.addCalendarDialog(fromDate, getActivity()));

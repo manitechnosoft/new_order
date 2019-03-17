@@ -9,10 +9,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:text="Welcome!"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -22,57 +23,95 @@
         android:id="@+id/scanned_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/new_design"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/button_padding"
+        android:background="@drawable/round_corner_button"
+        android:drawableLeft="@drawable/printer"
+        android:paddingLeft="25dp"
+        android:text="Print Order"></Button>
     <Button
         android:id="@+id/add_sales_person"
         android:layout_height="wrap_content"
         android:text="@string/add_sales_person"
-        android:layout_width="fill_parent"></Button>
+        android:layout_width="fill_parent"
+        android:background="@drawable/round_corner_button"
+        android:layout_marginTop="@dimen/button_padding"
+        android:paddingLeft="25dp"
+        android:drawableLeft="@drawable/my_account_fill"></Button>
     <Button
         android:id="@+id/display_sales_person"
         android:layout_height="wrap_content"
         android:text="@string/display_sales_person"
-        android:layout_width="fill_parent"></Button>
+        android:layout_width="fill_parent"
+        android:background="@drawable/round_corner_button"
+        android:layout_marginTop="@dimen/button_padding"
+        android:paddingLeft="25dp"
+        android:drawableLeft="@drawable/my_account_fill"></Button>
     <Button
     android:id="@+id/add_product"
     android:layout_height="wrap_content"
     android:text="@string/add_product"
-    android:layout_width="fill_parent"></Button>
+    android:layout_width="fill_parent"
+        android:background="@drawable/round_corner_button"
+        android:layout_marginTop="@dimen/button_padding"
+        android:paddingLeft="25dp"
+        android:drawableLeft="@drawable/poll_active"></Button>
     <Button
         android:id="@+id/display_product"
         android:layout_height="wrap_content"
         android:text="@string/display_product"
-        android:layout_width="fill_parent"></Button>
-    <Button
+        android:layout_width="fill_parent"
+        android:background="@drawable/round_corner_button"
+        android:layout_marginTop="@dimen/button_padding"
+        android:paddingLeft="25dp"
+        android:drawableLeft="@drawable/poll_active"></Button>
+   <!-- <Button
         android:id="@+id/sales_order"
         android:layout_height="wrap_content"
         android:text="@string/product_name"
-        android:layout_width="fill_parent"></Button>
-    <Button
-        android:id="@+id/display_sales_order"
-        android:layout_height="wrap_content"
-        android:text="@string/display_sales_orders"
-        android:layout_width="fill_parent"></Button>\
+        android:layout_width="fill_parent"></Button>-->
     <Button
         android:id="@+id/display_today_sales_order"
         android:layout_height="wrap_content"
         android:text="@string/display_today_sales_orders"
-        android:layout_width="fill_parent"></Button>
+        android:layout_width="fill_parent"
+        android:background="@drawable/round_corner_button"
+        android:layout_marginTop="@dimen/button_padding"
+        android:paddingLeft="25dp"
+        android:drawableLeft="@drawable/to_do_48"></Button>
+    <Button
+        android:id="@+id/display_sales_order"
+        android:layout_height="wrap_content"
+        android:text="@string/display_sales_orders"
+        android:layout_width="fill_parent"
+        android:background="@drawable/round_corner_button"
+        android:layout_marginTop="@dimen/button_padding"
+        android:paddingLeft="25dp"
+        android:drawableLeft="@drawable/to_do_48"></Button>
+
     <Button
         android:id="@+id/config"
         android:layout_height="wrap_content"
         android:text="@string/config"
-        android:layout_width="fill_parent"></Button>
-    <Button
-        android:id="@+id/new_design"
-        android:layout_height="wrap_content"
-        android:text="New Design"
-        android:layout_width="fill_parent"></Button>
+        android:layout_width="fill_parent"
+        android:background="@drawable/round_corner_button"
+        android:layout_marginTop="@dimen/button_padding"
+        android:paddingLeft="20dp"
+        android:drawableLeft="@drawable/settings_black_18dp"></Button>
 
-    <Button
+    <!--<Button
         android:id="@+id/barcode_reader"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Bar Code Reader"></Button>
+        android:text="Bar Code Reader"
+        android:background="@drawable/round_corner_button"
+        android:layout_marginTop="@dimen/button_padding"
+        android:paddingLeft="25dp"
+        android:drawableLeft="@drawable/bar_code_32"></Button>-->
 
    <!-- <Button
         android:id="@+id/turn_light"
@@ -83,6 +122,10 @@
         android:id="@+id/log_out"
         android:layout_height="wrap_content"
         android:text="@string/logout"
-        android:layout_width="fill_parent"></Button>
+        android:layout_width="fill_parent"
+        android:background="@drawable/round_corner_button"
+        android:layout_marginTop="@dimen/button_padding"
+        android:paddingLeft="20dp"
+        android:drawableLeft="@drawable/logout"></Button>
 </LinearLayout>
 </android.support.constraint.ConstraintLayout>

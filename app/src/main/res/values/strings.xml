@@ -7,6 +7,7 @@
     <string name="product_id">Product Id</string>
 
     <string name="add_product">Add Product</string>
+    <string name="update_product">Update Product</string>
     <string name="display_product">Display Product</string>
     <string name="display_update_product">Display And Update Products</string>
     <string name="title_product">Enter Product Details to Add</string>
@@ -19,7 +20,7 @@
     <string name="mobile">Mobile</string>
     <string name="total">Sales Total</string>
     <string name="no_of_items">Total Items: </string>
-    <string name="retail">Retail Price</string>
+    <string name="retail">Price</string>
     <string name="mrp">MRP</string>
     <string name="cost">Cost</string>
 

@@ -176,7 +176,8 @@ public class AppUtil {
         FirestoreUtil util=new FirestoreUtil();
         aFilter.setCustomerName(customer!=null && customer.getSelectedItemPosition()!=0 ?customer.getSelectedItem().toString():"");
         if(null!=salesPerson && salesPerson.getSelectedItemPosition()!=0){
-            Integer salesId = Integer.parseInt(salesPerson.getSelectedItem().toString());
+            String numberOnly= salesPerson.getSelectedItem().toString().replaceAll("[^0-9]", "");
+            Long salesId = Long.parseLong(numberOnly);
             aFilter.setSalesPersonId(null!=salesId?salesId.toString():"");
         }
         else{

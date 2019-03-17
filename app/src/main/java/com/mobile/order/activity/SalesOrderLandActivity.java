@@ -190,6 +190,7 @@ public class SalesOrderLandActivity extends BaseActivity {
             CustomerInfoFragment customerInfo = (CustomerInfoFragment) currentFragment;
             tag = CUSTOMER_INFO_TAG;
             EditText mobile = customerInfo.getView().findViewById(R.id.mobile);
+            EditText customerName = customerInfo.getView().findViewById(R.id.customer_name);
             if(!mobile.getText().toString().isEmpty() && mobile.getText().toString().length()<10){
                 Toast.makeText(getApplicationContext(), "Please enter 10 digit mobile number!",
                         Toast.LENGTH_SHORT).show();
@@ -197,6 +198,7 @@ public class SalesOrderLandActivity extends BaseActivity {
             }
             String customerNo=mobile.getText().toString();
             newOrder.setCustomerPhone(null==customerNo || customerNo.isEmpty()?"":customerNo);
+            newOrder.setCustomerName(customerName.getText().toString());
             //Create new sales order before print with product details, sales person id and customer mobile.
             generateOrder(newOrder);
             return;

@@ -16,7 +16,6 @@
 
 package com.journeyapps.barcodescanner;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -37,7 +36,6 @@ import java.util.List;
  * This view is overlaid on top of the camera preview. It adds the viewfinder rectangle and partial
  * transparency outside it, as well as the laser scanner animation and result points.
  *
- * @author dswitkin@google.com (Daniel Switkin)
  */
 public class ViewfinderView extends View {
     protected static final String TAG = ViewfinderView.class.getSimpleName();

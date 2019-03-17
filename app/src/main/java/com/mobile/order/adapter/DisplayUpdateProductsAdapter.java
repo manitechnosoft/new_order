@@ -3,6 +3,8 @@ package com.mobile.order.adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,12 +15,16 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mobile.order.R;
 import com.mobile.order.activity.DisplayAndUpdateProductActivity;
+import com.mobile.order.activity.ProductActivity;
+import com.mobile.order.activity.SalesOrderActivity;
 import com.mobile.order.filter.MoneyValueFilter;
 import com.mobile.order.helper.FirestoreUtil;
 import com.mobile.order.model.Product;
@@ -37,20 +43,23 @@ public class DisplayUpdateProductsAdapter extends RecyclerView.Adapter<DisplayUp
     // you provide access to all the views for a data item in a view holder
     public class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
+        @BindView(R.id.row)
+        public LinearLayout rowLayout;
+
         @BindView(R.id.product_doc_id)
         public TextView productDocId;
 
         @BindView(R.id.product_name)
-        public EditText productName;
+        public TextView productName;
 
         @BindView(R.id.product_id)
-        public EditText productId;
+        public TextView productId;
 
             @BindView(R.id.retail_type)
         public Spinner retailType;
 
         @BindView(R.id.retail_price)
-        public EditText retailPrice;
+        public TextView retailPrice;
 
         @BindView(R.id.product_name_error)
         public TextView productNameErr;
@@ -126,10 +135,10 @@ public class DisplayUpdateProductsAdapter extends RecyclerView.Adapter<DisplayUp
         int retailTypeSpinnerPosition = holder.retailTypeAdapter.getPosition(productList.get(position).getRetailSaleType());
         holder.retailType.setSelection(retailTypeSpinnerPosition);
 
-        holder.productName.addTextChangedListener( new TextChangeListener("PRODUCT_NAME", position));
-        holder.retailPrice.addTextChangedListener( new TextChangeListener("RETAIL_PRICE", position));
-        holder.retailPrice.setKeyListener(new MoneyValueFilter());
-        holder.retailType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        //holder.productName.addTextChangedListener( new TextChangeListener("PRODUCT_NAME", position));
+        //holder.retailPrice.addTextChangedListener( new TextChangeListener("RETAIL_PRICE", position));
+        //holder.retailPrice.setKeyListener(new MoneyValueFilter());
+        /*holder.retailType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int selectedItemPosition, long id) {
                 Product aProduct = productList.get(position);
@@ -141,8 +150,17 @@ public class DisplayUpdateProductsAdapter extends RecyclerView.Adapter<DisplayUp
                 // your code here
             }
 
-        });
+        });*/
+       holder.rowLayout.setOnClickListener(new View.OnClickListener() {
 
+           @Override
+           public void onClick(View view) {
+               Intent intent = new Intent(ctx, ProductActivity.class);
+               intent.putExtra("aProduct",productList.get(position));
+               ctx.startActivity(intent);
+               displayProductActivity.finish();
+           }
+       });
         if(productList.get(position).getProductName().isEmpty()){
             holder.productNameErr.setVisibility(View.VISIBLE);
         }

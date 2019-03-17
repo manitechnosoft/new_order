@@ -23,7 +23,7 @@ import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 
-import com.google.zxing.client.android.AmbientLightManager;
+import com.google.zxing.client.android.CameraAmbientLightManager;
 import com.google.zxing.client.android.camera.CameraConfigurationUtils;
 import com.google.zxing.client.android.camera.open.OpenCameraInterface;
 import com.journeyapps.barcodescanner.Size;
@@ -56,7 +56,7 @@ public final class CameraManager {
     private Camera.CameraInfo cameraInfo;
 
     private AutoFocusManager autoFocusManager;
-    private AmbientLightManager ambientLightManager;
+    private CameraAmbientLightManager cameraAmbientLightManager;
 
     private boolean previewing;
     private String defaultParameters;
@@ -181,8 +181,8 @@ public final class CameraManager {
             theCamera.startPreview();
             previewing = true;
             autoFocusManager = new AutoFocusManager(camera, settings);
-            ambientLightManager = new AmbientLightManager(context, this, settings);
-            ambientLightManager.start();
+            cameraAmbientLightManager = new CameraAmbientLightManager(context, this, settings);
+            cameraAmbientLightManager.start();
         }
     }
 
@@ -196,9 +196,9 @@ public final class CameraManager {
             autoFocusManager.stop();
             autoFocusManager = null;
         }
-        if (ambientLightManager != null) {
-            ambientLightManager.stop();
-            ambientLightManager = null;
+        if (cameraAmbientLightManager != null) {
+            cameraAmbientLightManager.stop();
+            cameraAmbientLightManager = null;
         }
         if (camera != null && previewing) {
             camera.stopPreview();

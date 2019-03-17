@@ -241,7 +241,7 @@ private Product getProduct(String productCode){
         Double total =  storedProduct.getRetailSalePrice() * userQuantity;
         Double roundedPrice = AppUtil.round(total,3);
         product1.setTotal(roundedPrice);
-        product1.setRetailSalePrice(roundedPrice);
+        product1.setRetailSalePrice(storedProduct.getRetailSalePrice() );
         product1.setRetailSaleType(storedProduct.getRetailSaleType());
       }
       product1.setQuantity(userQuantity);
@@ -324,7 +324,7 @@ private Product getProduct(String productCode){
   private void calculateTotal(){
     Double total=0D;
     for (Product aDetail : productsDetailList) {
-      total = total+aDetail.getRetailSalePrice();
+      total = total+aDetail.getRetailSalePrice() * aDetail.getQuantity();
     }
     Double roundedTotal = AppUtil.round(total,3);
     orderTotal.setText(roundedTotal.toString());

@@ -294,7 +294,7 @@ public class FirestoreUtil {
             public void onComplete(@NonNull Task<QuerySnapshot> task){
                 if (task.isSuccessful()) {
                     if(task.getResult().size()==0){
-                        Toast.makeText(ctx, "Sales Person Not is not existed in database!",
+                        Toast.makeText(ctx, "Sales Person is not existed in database!",
                                 Toast.LENGTH_SHORT).show();
                     }
                     else{

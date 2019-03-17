@@ -6,7 +6,7 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 
 /**
- * Author: Cerlin <cerlin@linkstreet.in>.
+ *
  * Date: 27/6/17
  */
 

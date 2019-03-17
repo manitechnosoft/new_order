@@ -35,18 +35,14 @@ import java.util.Map;
 
 /**
  *
- * @author Sean Owen
- * @author Fred Lin
- * @author Isaac Potoczny-Jones
- * @author Brad Drehmer
- * @author gcstang
+ *
  */
 @SuppressWarnings("unused")
-public class IntentIntegrator {
+public class BarCodeIntentIntegrator {
 
     public static final int REQUEST_CODE = 0x0000c0de; // Only use bottom 16 bits
 
-    private static final String TAG = IntentIntegrator.class.getSimpleName();
+    private static final String TAG = BarCodeIntentIntegrator.class.getSimpleName();
 
 
     // supported barcode formats
@@ -95,7 +91,7 @@ public class IntentIntegrator {
         return CaptureActivity.class;
     }
 
-    public IntentIntegrator(Activity activity) {
+    public BarCodeIntentIntegrator(Activity activity) {
         this.activity = activity;
     }
 
@@ -112,7 +108,7 @@ public class IntentIntegrator {
      *
      * @param captureActivity the class
      */
-    public IntentIntegrator setCaptureActivity(Class<?> captureActivity) {
+    public BarCodeIntentIntegrator setCaptureActivity(Class<?> captureActivity) {
         this.captureActivity = captureActivity;
         return this;
     }
@@ -124,7 +120,7 @@ public class IntentIntegrator {
      * @param requestCode the new request code
      * @return this
      */
-    public IntentIntegrator setRequestCode(int requestCode) {
+    public BarCodeIntentIntegrator setRequestCode(int requestCode) {
         if (requestCode <= 0 || requestCode > 0x0000ffff) {
             throw new IllegalArgumentException("requestCode out of range");
         }
@@ -137,8 +133,8 @@ public class IntentIntegrator {
      *                 {@link #startActivityForResult(Intent, int)} will be called on the {@link Fragment} instead
      *                 of an {@link Activity}
      */
-    public static IntentIntegrator forSupportFragment(android.support.v4.app.Fragment fragment) {
-        IntentIntegrator integrator = new IntentIntegrator(fragment.getActivity());
+    public static BarCodeIntentIntegrator forSupportFragment(android.support.v4.app.Fragment fragment) {
+        BarCodeIntentIntegrator integrator = new BarCodeIntentIntegrator(fragment.getActivity());
         integrator.supportFragment = fragment;
         return integrator;
     }
@@ -149,8 +145,8 @@ public class IntentIntegrator {
      *                 of an {@link Activity}
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static IntentIntegrator forFragment(Fragment fragment) {
-        IntentIntegrator integrator = new IntentIntegrator(fragment.getActivity());
+    public static BarCodeIntentIntegrator forFragment(Fragment fragment) {
+        BarCodeIntentIntegrator integrator = new BarCodeIntentIntegrator(fragment.getActivity());
         integrator.fragment = fragment;
         return integrator;
     }
@@ -159,7 +155,7 @@ public class IntentIntegrator {
         return moreExtras;
     }
 
-    public final IntentIntegrator addExtra(String key, Object value) {
+    public final BarCodeIntentIntegrator addExtra(String key, Object value) {
         moreExtras.put(key, value);
         return this;
     }
@@ -169,7 +165,7 @@ public class IntentIntegrator {
      *
      * @param prompt the prompt to display
      */
-    public final IntentIntegrator setPrompt(String prompt) {
+    public final BarCodeIntentIntegrator setPrompt(String prompt) {
         if (prompt != null) {
             addExtra(Intents.Scan.PROMPT_MESSAGE, prompt);
         }
@@ -181,7 +177,7 @@ public class IntentIntegrator {
      *
      * @param locked true to lock orientation
      */
-    public IntentIntegrator setOrientationLocked(boolean locked) {
+    public BarCodeIntentIntegrator setOrientationLocked(boolean locked) {
         addExtra(Intents.Scan.ORIENTATION_LOCKED, locked);
         return this;
     }
@@ -192,7 +188,7 @@ public class IntentIntegrator {
      * @param cameraId camera ID of the camera to use. A negative value means "no preference".
      * @return this
      */
-    public IntentIntegrator setCameraId(int cameraId) {
+    public BarCodeIntentIntegrator setCameraId(int cameraId) {
         if (cameraId >= 0) {
             addExtra(Intents.Scan.CAMERA_ID, cameraId);
         }
@@ -205,7 +201,7 @@ public class IntentIntegrator {
      * @param enabled true to enable initial torch
      * @return this
      */
-    public IntentIntegrator setTorchEnabled(boolean enabled) {
+    public BarCodeIntentIntegrator setTorchEnabled(boolean enabled) {
         addExtra(Intents.Scan.TORCH_ENABLED, enabled);
         return this;
     }
@@ -217,7 +213,7 @@ public class IntentIntegrator {
      * @param enabled false to disable beep
      * @return this
      */
-    public IntentIntegrator setBeepEnabled(boolean enabled) {
+    public BarCodeIntentIntegrator setBeepEnabled(boolean enabled) {
         addExtra(Intents.Scan.BEEP_ENABLED, enabled);
         return this;
     }
@@ -228,7 +224,7 @@ public class IntentIntegrator {
      * @param enabled true to enable barcode image
      * @return this
      */
-    public IntentIntegrator setBarcodeImageEnabled(boolean enabled) {
+    public BarCodeIntentIntegrator setBarcodeImageEnabled(boolean enabled) {
         addExtra(Intents.Scan.BARCODE_IMAGE_ENABLED, enabled);
         return this;
     }
@@ -239,7 +235,7 @@ public class IntentIntegrator {
      * @param desiredBarcodeFormats names of {@code BarcodeFormat}s to scan for
      * @return this
      */
-    public IntentIntegrator setDesiredBarcodeFormats(Collection<String> desiredBarcodeFormats) {
+    public BarCodeIntentIntegrator setDesiredBarcodeFormats(Collection<String> desiredBarcodeFormats) {
         this.desiredBarcodeFormats = desiredBarcodeFormats;
         return this;
     }
@@ -250,7 +246,7 @@ public class IntentIntegrator {
      * @param desiredBarcodeFormats names of {@code BarcodeFormat}s to scan for
      * @return this
      */
-    public IntentIntegrator setDesiredBarcodeFormats(String... desiredBarcodeFormats) {
+    public BarCodeIntentIntegrator setDesiredBarcodeFormats(String... desiredBarcodeFormats) {
         this.desiredBarcodeFormats = Arrays.asList(desiredBarcodeFormats);
         return this;
     }
@@ -267,7 +263,7 @@ public class IntentIntegrator {
      * And starts a timer to finish on timeout
      * @return Activity.RESULT_CANCELED and true on parameter TIMEOUT.
      */
-    public IntentIntegrator setTimeout(long timeout) {
+    public BarCodeIntentIntegrator setTimeout(long timeout) {
         addExtra(Intents.Scan.TIMEOUT, timeout);
         return this;
     }

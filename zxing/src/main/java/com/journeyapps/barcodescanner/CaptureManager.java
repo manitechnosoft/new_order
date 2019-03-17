@@ -46,7 +46,7 @@ import java.util.Map;
  * - Orientation lock
  * - InactivityTimer
  * - BeepManager
- * - Initializing from an Intent (via IntentIntegrator)
+ * - Initializing from an Intent (via BarCodeIntentIntegrator)
  * - Setting the result and finishing the Activity when a barcode is scanned
  * - Displaying camera errors
  */

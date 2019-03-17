@@ -7,7 +7,7 @@ import android.text.style.MetricAffectingSpan;
 
 /**
  * Description: CustomTypefaceSpan for having two fonts in one TextView
- * Author: Cerlin <cerlin@linkstreet.in>.
+ *
  * Date: 11/5/17
  */
 
